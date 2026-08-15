@@ -73,7 +73,7 @@ func verifyKeyUsable(c *Credentials) error {
 	if key.Curve.Params().Name != "P-256" {
 		return fmt.Errorf("key curve is %s; Apple Ads requires P-256 (prime256v1)", key.Curve.Params().Name)
 	}
-	digest := sha256.Sum256([]byte("adastra-selftest"))
+	digest := sha256.Sum256([]byte("asacli-selftest"))
 	if _, _, err := ecdsa.Sign(rand.Reader, key, digest[:]); err != nil {
 		return err
 	}

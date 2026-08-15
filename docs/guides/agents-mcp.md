@@ -1,22 +1,22 @@
-# Driving adastra from AI agents
+# Driving asacli from AI agents
 
-adastra is agent-native: JSON-first output, a built-in MCP server, and a
+asacli is agent-native: JSON-first output, a built-in MCP server, and a
 skills pack that teaches agents the workflows (not just the commands).
 
 ## MCP server
 
 ```
-adastra mcp serve        # stdio MCP server
+asacli mcp serve        # stdio MCP server
 ```
 
 Register it:
 
 ```
 # Claude Code
-claude mcp add adastra -- adastra mcp serve
+claude mcp add asacli -- asacli mcp serve
 
 # Claude Desktop (claude_desktop_config.json)
-{ "mcpServers": { "adastra": { "command": "adastra", "args": ["mcp", "serve"] } } }
+{ "mcpServers": { "asacli": { "command": "asacli", "args": ["mcp", "serve"] } } }
 ```
 
 ~30 tools mirror the command tree (`campaigns_list`, `harvest_run`,
@@ -29,8 +29,8 @@ an agent must show you the plan before it can spend a cent. Reads run as-is.
 ## Skills pack
 
 ```
-adastra install-skills            # → ./.claude/skills/
-adastra install-skills --global   # → ~/.claude/skills/
+asacli install-skills            # → ./.claude/skills/
+asacli install-skills --global   # → ~/.claude/skills/
 ```
 
 Installs three playbooks any skills-aware agent can load:
@@ -44,6 +44,6 @@ Installs three playbooks any skills-aware agent can load:
 Everything is also just JSON on stdout:
 
 ```
-adastra reports keywords --since 7d | jq '.[] | select(.totalInstalls == "0")'
-adastra aso track alerts --drop 5 && echo "ranks healthy"
+asacli reports keywords --since 7d | jq '.[] | select(.totalInstalls == "0")'
+asacli aso track alerts --drop 5 && echo "ranks healthy"
 ```

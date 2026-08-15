@@ -1,11 +1,11 @@
-# Contributing to adastra
+# Contributing to asacli
 
 Thanks for helping build the App Store growth stack.
 
 ## Setup
 
 ```sh
-git clone https://github.com/tawhidkuet04/adastra && cd adastra
+git clone https://github.com/tawhidkuet04/asacli && cd asacli
 make build && make test
 ```
 

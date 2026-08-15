@@ -19,17 +19,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tawhidkuet04/adastra/internal/config"
+	"github.com/tawhidkuet04/asacli/internal/config"
 )
 
-const userAgent = "adastra-cli (+https://github.com/tawhidkuet04/adastra)"
+const userAgent = "asacli-cli (+https://github.com/tawhidkuet04/asacli)"
 
 var (
 	paceMu   sync.Mutex
 	lastCall time.Time
 )
 
-// App is the subset of iTunes Search API fields adastra uses.
+// App is the subset of iTunes Search API fields asacli uses.
 type App struct {
 	AdamID       int64    `json:"trackId"`
 	Name         string   `json:"trackName"`

@@ -1,4 +1,4 @@
-module github.com/tawhidkuet04/adastra
+module github.com/tawhidkuet04/asacli
 
 go 1.24
 

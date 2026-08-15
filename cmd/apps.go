@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/api"
 )
 
 func init() {
@@ -130,7 +130,7 @@ func init() {
 	appsCmd.AddCommand(search, get, eligibility, rejections, languages)
 	rootCmd.AddCommand(appsCmd)
 
-	// geo lives at top level per the spec: `adastra geo search`
+	// geo lives at top level per the spec: `asacli geo search`
 	geoCmd := &cobra.Command{Use: "geo", Short: "Geo targeting metadata"}
 	var entity string
 	geoSearch := &cobra.Command{

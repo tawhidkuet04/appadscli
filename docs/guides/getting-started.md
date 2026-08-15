@@ -17,7 +17,7 @@ Roles: read-only commands need **API Read Only**; mutations need
 ## 2. Log in
 
 ```
-adastra auth login \
+asacli auth login \
   --client-id SEARCHADS.xxxxxxxx \
   --team-id   SEARCHADS.xxxxxxxx \
   --key-id    xxxxxxxx-xxxx-xxxx \
@@ -28,32 +28,32 @@ Credentials go to the macOS keychain (or a 0600 file with `--bypass-keychain`
 / on Linux). Verify everything with:
 
 ```
-adastra auth doctor
+asacli auth doctor
 ```
 
 ## 3. Pick your ad account
 
 ```
-adastra accounts list
-adastra accounts use <adAccountId>
+asacli accounts list
+asacli accounts use <adAccountId>
 ```
 
 ## 4. First commands
 
 ```
-adastra dashboard --since 7d
-adastra campaigns list
-adastra aso research "your category" --expand
+asacli dashboard --since 7d
+asacli campaigns list
+asacli aso research "your category" --expand
 ```
 
 Every command supports `--output json|table|csv|markdown`. In pipes and CI the
-default is JSON; on a TTY it's a table. `ADASTRA_OUTPUT` overrides the default,
+default is JSON; on a TTY it's a table. `ASACLI_OUTPUT` overrides the default,
 `--output` always wins.
 
 ## Environment variables
 
 | Variable | Effect |
 |---|---|
-| `ADASTRA_DIR` | state directory (default `~/.adastra`) |
-| `ADASTRA_OUTPUT` | default output format |
-| `ADASTRA_API_BASE` | override the Apple Ads API base URL |
+| `ASACLI_DIR` | state directory (default `~/.asacli`) |
+| `ASACLI_OUTPUT` | default output format |
+| `ASACLI_API_BASE` | override the Apple Ads API base URL |

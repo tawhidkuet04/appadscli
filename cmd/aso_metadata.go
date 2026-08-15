@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
-	"github.com/tawhidkuet04/adastra/internal/aso"
-	"github.com/tawhidkuet04/adastra/internal/itunes"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/aso"
+	"github.com/tawhidkuet04/asacli/internal/itunes"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
 func newMetadataCmd() *cobra.Command {
@@ -193,7 +193,7 @@ func newCompetitorsCmd() *cobra.Command {
 			if err := st.WatchCompetitor(args[0], asoCountry(wCountry)); err != nil {
 				return err
 			}
-			fmt.Println("✓ watching", args[0], "— run `adastra aso competitors watch run` to snapshot & diff")
+			fmt.Println("✓ watching", args[0], "— run `asacli aso competitors watch run` to snapshot & diff")
 			return nil
 		},
 	}
@@ -213,7 +213,7 @@ func newCompetitorsCmd() *cobra.Command {
 				return err
 			}
 			if len(watched) == 0 {
-				return fmt.Errorf("no competitors watched — `adastra aso competitors watch add <adamId>` first")
+				return fmt.Errorf("no competitors watched — `asacli aso competitors watch add <adamId>` first")
 			}
 			type change struct {
 				AdamID, Field, Old, New string

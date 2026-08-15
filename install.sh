@@ -1,10 +1,10 @@
 #!/bin/sh
-# adastra installer — https://github.com/tawhidkuet04/adastra
-# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/adastra/main/install.sh | sh
+# asacli installer — https://github.com/tawhidkuet04/asacli
+# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/asacli/main/install.sh | sh
 set -eu
 
-REPO="tawhidkuet04/adastra"
-INSTALL_DIR="${ADASTRA_INSTALL_DIR:-/usr/local/bin}"
+REPO="tawhidkuet04/asacli"
+INSTALL_DIR="${ASACLI_INSTALL_DIR:-/usr/local/bin}"
 
 main() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -23,27 +23,27 @@ main() {
     grep '"tag_name"' | head -1 | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
   [ -n "$tag" ] || err "could not determine latest release — is the first release published?"
 
-  url="https://github.com/$REPO/releases/download/$tag/adastra_${tag#v}_${os}_${arch}.tar.gz"
+  url="https://github.com/$REPO/releases/download/$tag/asacli_${tag#v}_${os}_${arch}.tar.gz"
   tmp=$(mktemp -d)
   trap 'rm -rf "$tmp"' EXIT
 
-  echo "→ downloading adastra $tag ($os/$arch)"
-  curl -fsSL "$url" -o "$tmp/adastra.tar.gz" || err "download failed: $url"
-  tar -xzf "$tmp/adastra.tar.gz" -C "$tmp"
+  echo "→ downloading asacli $tag ($os/$arch)"
+  curl -fsSL "$url" -o "$tmp/asacli.tar.gz" || err "download failed: $url"
+  tar -xzf "$tmp/asacli.tar.gz" -C "$tmp"
 
   if [ -w "$INSTALL_DIR" ]; then
-    mv "$tmp/adastra" "$INSTALL_DIR/adastra"
+    mv "$tmp/asacli" "$INSTALL_DIR/asacli"
   else
     echo "→ $INSTALL_DIR needs sudo"
-    sudo mv "$tmp/adastra" "$INSTALL_DIR/adastra"
+    sudo mv "$tmp/asacli" "$INSTALL_DIR/asacli"
   fi
-  chmod +x "$INSTALL_DIR/adastra" 2>/dev/null || sudo chmod +x "$INSTALL_DIR/adastra"
+  chmod +x "$INSTALL_DIR/asacli" 2>/dev/null || sudo chmod +x "$INSTALL_DIR/asacli"
 
-  echo "✓ installed: $("$INSTALL_DIR/adastra" --version)"
+  echo "✓ installed: $("$INSTALL_DIR/asacli" --version)"
   echo ""
   echo "next steps:"
-  echo "  adastra docs show getting-started"
-  echo "  adastra auth login --client-id ... --team-id ... --key-id ... --private-key ./key.pem"
+  echo "  asacli docs show getting-started"
+  echo "  asacli auth login --client-id ... --team-id ... --key-id ... --private-key ./key.pem"
 }
 
 err() {

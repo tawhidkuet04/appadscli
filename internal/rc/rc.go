@@ -1,6 +1,6 @@
 // Package rc is the RevenueCat connector: credential storage, data ingest
 // (Scheduled Data Exports / Customer Lists CSV), REST API v2 supplement, and
-// the spend⋈revenue join powering `adastra roas` and `adastra ltv`.
+// the spend⋈revenue join powering `asacli roas` and `asacli ltv`.
 //
 // Attribution path: the RC SDK's enableAdServicesAttributionTokenCollection()
 // fills reserved subscriber attributes ($campaignId, $adGroupId, $keywordId,
@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidkuet04/adastra/internal/config"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/config"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
 // Credentials for the RevenueCat REST API v2.
@@ -60,7 +60,7 @@ func LoadCredentials() (*Credentials, error) {
 	}
 	b, err := os.ReadFile(p)
 	if os.IsNotExist(err) {
-		return nil, fmt.Errorf("RevenueCat not connected — run `adastra rc connect` first")
+		return nil, fmt.Errorf("RevenueCat not connected — run `asacli rc connect` first")
 	}
 	if err != nil {
 		return nil, err

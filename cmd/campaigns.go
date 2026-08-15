@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
-	"github.com/tawhidkuet04/adastra/internal/engine"
+	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/engine"
 )
 
 var campaignCols = []string{
@@ -241,7 +241,7 @@ func newScaffoldCmd() *cobra.Command {
   discovery   — Search Match ON + broad match, mines new search terms
 
 Each campaign gets one ad group with sensible defaults. Feed discovery's
-winners into category/brand with ` + "`adastra harvest run`" + `.`,
+winners into category/brand with ` + "`asacli harvest run`" + `.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c := client()
 			if err := c.RequireAccount(); err != nil {

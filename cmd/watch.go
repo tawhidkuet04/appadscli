@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/engine"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/engine"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
 func init() {
@@ -29,7 +29,7 @@ guardrails.json against live data:
 
 Autonomy ladder ("autonomy" in guardrails.json, --auto-apply overrides):
   alert    print findings only (default)
-  propose  also write a plan file for ` + "`adastra plan apply`" + `
+  propose  also write a plan file for ` + "`asacli plan apply`" + `
   auto     apply changes within caps (never touches "neverPause" campaigns)
 
 Exit code is non-zero when alerts fired — wire it to CI notifications.`,
@@ -57,12 +57,12 @@ Exit code is non-zero when alerts fired — wire it to CI notifications.`,
 			if res.Proposals != nil && len(res.Proposals.Changes) > 0 {
 				path := planOut
 				if path == "" {
-					path = fmt.Sprintf("adastra-plan-%s.json", time.Now().Format("20060102-150405"))
+					path = fmt.Sprintf("asacli-plan-%s.json", time.Now().Format("20060102-150405"))
 				}
 				if err := engine.WritePlan(res.Proposals, path); err != nil {
 					return err
 				}
-				fmt.Fprintf(os.Stderr, "→ plan written to %s (review with `adastra plan show %s`)\n", path, path)
+				fmt.Fprintf(os.Stderr, "→ plan written to %s (review with `asacli plan show %s`)\n", path, path)
 			}
 			if g.Alerts != nil && g.Alerts.Webhook != "" {
 				notifyWebhook(g.Alerts.Webhook, res)
@@ -102,7 +102,7 @@ Exit code is non-zero when alerts fired — wire it to CI notifications.`,
 			for i, ch := range p.Changes {
 				fmt.Printf("%2d. %s\n    %s %s\n", i+1, ch.Description, ch.Method, ch.Path)
 			}
-			fmt.Println("\napply with: adastra plan apply", args[0], "--confirm")
+			fmt.Println("\napply with: asacli plan apply", args[0], "--confirm")
 			return nil
 		},
 	}

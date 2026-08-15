@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
-	"github.com/tawhidkuet04/adastra/internal/rc"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/rc"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
 func init() {
@@ -21,11 +21,11 @@ Setup (one-time):
      (2 lines with the RC SDK — no ATT prompt needed)
   2. In RevenueCat: connect the Apple Search Ads integration
      (Sign in with Apple, Read Only role is sufficient)
-  3. adastra rc connect --api-key <v2-key> --project <id>
+  3. asacli rc connect --api-key <v2-key> --project <id>
   4. Export data (Scheduled Data Exports recommended) and:
-     adastra rc ingest ./export.csv
+     asacli rc ingest ./export.csv
 
-Then: adastra roas report --by keyword`,
+Then: asacli roas report --by keyword`,
 	}
 
 	var apiKey, project string
@@ -67,7 +67,7 @@ Then: adastra roas report --by keyword`,
 				rows, attributed, pctOf(attributed, rows))
 			if attributed == 0 && rows > 0 {
 				fmt.Println("⚠ no ASA-attributed rows — check that AdServices token collection and the")
-				fmt.Println("  Apple Search Ads integration are enabled in RevenueCat (see `adastra rc --help`)")
+				fmt.Println("  Apple Search Ads integration are enabled in RevenueCat (see `asacli rc --help`)")
 			}
 			return nil
 		},
@@ -101,7 +101,7 @@ Then: adastra roas report --by keyword`,
 				return err
 			}
 			if len(revenue) == 0 {
-				return fmt.Errorf("no RevenueCat data in window — run `adastra rc ingest` first")
+				return fmt.Errorf("no RevenueCat data in window — run `asacli rc ingest` first")
 			}
 			path := map[string]string{
 				"campaign": "/v1/reports/apps/campaigns/query",

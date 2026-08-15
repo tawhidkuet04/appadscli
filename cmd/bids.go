@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/engine"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/engine"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
 func init() {
@@ -70,7 +70,7 @@ func init() {
 	}
 	adjust.Flags().StringVar(&adgroup, "adgroup", "", "ad group id (required)")
 	adjust.Flags().Float64Var(&targetCPA, "target-cpa", 0, "target cost per install")
-	adjust.Flags().Float64Var(&targetROAS, "target-roas", 0, "target ROAS, e.g. 1.5 or 150 (needs `adastra rc ingest`)")
+	adjust.Flags().Float64Var(&targetROAS, "target-roas", 0, "target ROAS, e.g. 1.5 or 150 (needs `asacli rc ingest`)")
 	adjust.Flags().StringVar(&maxChange, "max-change", "20%", "max per-run bid change")
 	adjust.Flags().StringVar(&since, "since", "14d", "performance window")
 	adjust.Flags().Float64Var(&minTaps, "min-taps", 10, "ignore keywords with fewer taps")
@@ -93,7 +93,7 @@ func init() {
     ]
   }
 
-Each rule runs the same engine as ` + "`adastra bids adjust`" + ` scoped to its
+Each rule runs the same engine as ` + "`asacli bids adjust`" + ` scoped to its
 ad group. Use --dry-run to preview all changes.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c := client()

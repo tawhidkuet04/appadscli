@@ -13,10 +13,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/tawhidkuet04/adastra/internal/config"
+	"github.com/tawhidkuet04/asacli/internal/config"
 )
 
-const keychainService = "adastra-apple-ads"
+const keychainService = "asacli-apple-ads"
 
 // Credentials are the per-user Apple Ads API credentials.
 type Credentials struct {
@@ -27,7 +27,7 @@ type Credentials struct {
 }
 
 // ErrNotLoggedIn is returned when no credentials are stored.
-var ErrNotLoggedIn = errors.New("not logged in — run `adastra auth login` first")
+var ErrNotLoggedIn = errors.New("not logged in — run `asacli auth login` first")
 
 func credsFile() (string, error) {
 	d, err := config.Dir()
@@ -93,7 +93,7 @@ func LoadCredentials() (*Credentials, error) {
 		out, err := exec.Command("security", "find-generic-password",
 			"-s", probe["keychain"], "-a", probe["account"], "-w").Output()
 		if err != nil {
-			return nil, fmt.Errorf("keychain read failed (%w) — re-run `adastra auth login`", err)
+			return nil, fmt.Errorf("keychain read failed (%w) — re-run `asacli auth login`", err)
 		}
 		b = []byte(strings.TrimSpace(string(out)))
 	}

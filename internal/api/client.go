@@ -22,8 +22,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidkuet04/adastra/internal/auth"
-	"github.com/tawhidkuet04/adastra/internal/config"
+	"github.com/tawhidkuet04/asacli/internal/auth"
+	"github.com/tawhidkuet04/asacli/internal/config"
 )
 
 // DefaultBase is the Apple Ads Platform API v1 base URL (no trailing slash;
@@ -83,7 +83,7 @@ func New(cfg *config.Config, account string) *Client {
 	if cfg != nil && cfg.APIBase != "" {
 		base = cfg.APIBase
 	}
-	if env := os.Getenv("ADASTRA_API_BASE"); env != "" {
+	if env := os.Getenv("ASACLI_API_BASE"); env != "" {
 		base = env
 	}
 	if account == "" && cfg != nil {
@@ -100,7 +100,7 @@ func New(cfg *config.Config, account string) *Client {
 // RequireAccount errors early for ad-account-scoped commands.
 func (c *Client) RequireAccount() error {
 	if c.AdAccount == "" {
-		return fmt.Errorf("no ad account set — pass --account <id> or run `adastra accounts use <id>` (find ids with `adastra accounts list`)")
+		return fmt.Errorf("no ad account set — pass --account <id> or run `asacli accounts use <id>` (find ids with `asacli accounts list`)")
 	}
 	return nil
 }

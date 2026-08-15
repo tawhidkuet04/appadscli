@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/api"
 )
 
 func init() {

@@ -7,11 +7,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/tawhidkuet04/adastra/internal/api"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
-// Guardrails is the guardrails.json schema that drives `adastra watch`.
+// Guardrails is the guardrails.json schema that drives `asacli watch`.
 type Guardrails struct {
 	MaxDailySpend   float64            `json:"maxDailySpend,omitempty"`
 	MaxCPA          *MaxCPA            `json:"maxCpa,omitempty"`
@@ -204,7 +204,7 @@ func harvestToPlanChanges(h *GuardrailsHarvest, actions []HarvestAction) []PlanC
 		case "promote":
 			// The literal keyword create needs the target ad group resolved at
 			// apply time; watch encodes the negative (safe) and leaves promotion
-			// to `adastra harvest run`, which resolves ad groups properly.
+			// to `asacli harvest run`, which resolves ad groups properly.
 			body, _ := json.Marshal([]map[string]any{{
 				"campaignId": json.Number(h.Discovery), "text": a.SearchTerm,
 				"matchType": "EXACT", "status": "ACTIVE",

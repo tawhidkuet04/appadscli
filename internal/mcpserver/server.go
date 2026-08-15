@@ -1,6 +1,6 @@
 // Package mcpserver implements a minimal Model Context Protocol server over
-// stdio (JSON-RPC 2.0), exposing adastra commands 1:1 as tools. Tool calls
-// re-exec the adastra binary with ADASTRA_OUTPUT=json so agents always get
+// stdio (JSON-RPC 2.0), exposing asacli commands 1:1 as tools. Tool calls
+// re-exec the asacli binary with ASACLI_OUTPUT=json so agents always get
 // machine-readable results, and mutations still require explicit
 // confirm=true (mapped to --confirm) — the same safety contract humans get.
 package mcpserver
@@ -77,7 +77,7 @@ func handle(tools []Tool, version, method string, params json.RawMessage) (any, 
 		return map[string]any{
 			"protocolVersion": "2024-11-05",
 			"capabilities":    map[string]any{"tools": map[string]any{}},
-			"serverInfo":      map[string]any{"name": "adastra", "version": version},
+			"serverInfo":      map[string]any{"name": "asacli", "version": version},
 		}, nil
 	case "ping":
 		return map[string]any{}, nil
@@ -132,7 +132,7 @@ func handle(tools []Tool, version, method string, params json.RawMessage) (any, 
 func run(t Tool, args map[string]any) (string, bool) {
 	self, err := os.Executable()
 	if err != nil {
-		return "cannot locate adastra binary: " + err.Error(), true
+		return "cannot locate asacli binary: " + err.Error(), true
 	}
 	argv := append([]string{}, t.Argv...)
 	for _, p := range t.Positional {
@@ -163,7 +163,7 @@ func run(t Tool, args map[string]any) (string, bool) {
 		}
 	}
 	cmd := exec.Command(self, argv...)
-	cmd.Env = append(os.Environ(), "ADASTRA_OUTPUT=json")
+	cmd.Env = append(os.Environ(), "ASACLI_OUTPUT=json")
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr

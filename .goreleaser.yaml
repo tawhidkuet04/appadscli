@@ -1,5 +1,5 @@
 version: 2
-project_name: adastra
+project_name: asacli
 
 builds:
   - main: .
@@ -7,7 +7,7 @@ builds:
     goos: [darwin, linux, windows]
     goarch: [amd64, arm64]
     ldflags:
-      - -s -w -X github.com/tawhidkuet04/adastra/cmd.Version={{.Version}}
+      - -s -w -X github.com/tawhidkuet04/asacli/cmd.Version={{.Version}}
 
 archives:
   - formats: [tar.gz]
@@ -25,11 +25,11 @@ brews:
       owner: tawhidkuet04
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    homepage: https://github.com/tawhidkuet04/adastra
+    homepage: https://github.com/tawhidkuet04/asacli
     description: "Your App Store growth stack in one binary — ASO + Apple Ads CLI"
     license: MIT
     test: |
-      system "#{bin}/adastra --version"
+      system "#{bin}/asacli --version"
 
 changelog:
   sort: asc

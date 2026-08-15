@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
-	"github.com/tawhidkuet04/adastra/internal/itunes"
-	"github.com/tawhidkuet04/adastra/internal/store"
+	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/itunes"
+	"github.com/tawhidkuet04/asacli/internal/store"
 )
 
 func newTrackCmd() *cobra.Command {
@@ -48,7 +48,7 @@ func newTrackCmd() *cobra.Command {
 				}
 			}
 			fmt.Printf("✓ tracking %d keyword/country pairs for app %s\n", n, app)
-			fmt.Println("run `adastra aso track run` (e.g. from cron) to snapshot ranks")
+			fmt.Println("run `asacli aso track run` (e.g. from cron) to snapshot ranks")
 			return nil
 		},
 	}
@@ -73,7 +73,7 @@ func newTrackCmd() *cobra.Command {
 				return err
 			}
 			if len(tracked) == 0 {
-				return fmt.Errorf("nothing tracked — run `adastra aso track add` first")
+				return fmt.Errorf("nothing tracked — run `asacli aso track add` first")
 			}
 			now := time.Now()
 			var rows [][]string

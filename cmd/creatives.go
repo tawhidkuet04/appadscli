@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/api"
 )
 
 func init() {
@@ -218,7 +218,7 @@ func init() {
 		Use:   "start",
 		Short: "Run a CPP against the default page in one ad group (two ads, rotate evenly)",
 		Long: `Creates a creative for the CPP and an ad alongside the ad group's default
-ad. Apple rotates serving; compare with ` + "`adastra cpp test report`" + `.`,
+ad. Apple rotates serving; compare with ` + "`asacli cpp test report`" + `.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c := client()
 			if err := c.RequireAccount(); err != nil {
@@ -253,7 +253,7 @@ ad. Apple rotates serving; compare with ` + "`adastra cpp test report`" + `.`,
 				return err
 			}
 			return render().JSON(map[string]any{"creative": creative, "ad": ad,
-				"next": "compare with `adastra cpp test report --adgroup " + tAdGroup + "`"})
+				"next": "compare with `asacli cpp test report --adgroup " + tAdGroup + "`"})
 		},
 	}
 	tStart.Flags().StringVar(&tAdGroup, "adgroup", "", "ad group id (required)")

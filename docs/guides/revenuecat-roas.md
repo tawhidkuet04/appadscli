@@ -1,6 +1,6 @@
 # ROAS & LTV with RevenueCat
 
-Apple's Ads API stops at installs. With the RevenueCat connector, adastra joins
+Apple's Ads API stops at installs. With the RevenueCat connector, asacli joins
 **spend (Ads API) ⋈ revenue (RevenueCat)** down to the keyword — no ATT prompt
 required.
 
@@ -14,28 +14,28 @@ required.
    (Sign in with Apple; the Read Only role is sufficient). The Standard
    payload already includes `campaignId`, `adGroupId`, `keywordId`, `adId`,
    `countryOrRegion`, and `claimType` for **all** attributed users.
-3. **Connect adastra**:
+3. **Connect asacli**:
    ```
-   adastra rc connect --api-key <RC_v2_secret_key> --project <projectId>
+   asacli rc connect --api-key <RC_v2_secret_key> --project <projectId>
    ```
 4. **Feed it data** — RevenueCat *Scheduled Data Exports* are the recommended
    route (they carry the reserved `$` attributes with the ASA ids):
    ```
-   adastra rc ingest ./export.csv     # also accepts .jsonl
+   asacli rc ingest ./export.csv     # also accepts .jsonl
    ```
 
 ## Reports
 
 ```
-adastra roas report --by keyword --since 30d
-adastra ltv report --by campaign --horizon 90d
+asacli roas report --by keyword --since 30d
+asacli ltv report --by campaign --horizon 90d
 ```
 
 ## New optimization modes
 
 ```
-adastra bids adjust --adgroup <id> --target-roas 150% --dry-run   # bid to profitability
-adastra harvest run ... --rank-by roas                            # promote by revenue, not installs
+asacli bids adjust --adgroup <id> --target-roas 150% --dry-run   # bid to profitability
+asacli harvest run ... --rank-by roas                            # promote by revenue, not installs
 ```
 
 ## Honest caveats (also printed in output)

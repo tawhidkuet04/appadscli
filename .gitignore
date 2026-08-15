@@ -1,6 +1,6 @@
-/adastra
+/asacli
 /dist/
 *.pem
 *.p8
-adastra-plan-*.json
+asacli-plan-*.json
 .DS_Store

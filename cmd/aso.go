@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/adastra/internal/api"
-	"github.com/tawhidkuet04/adastra/internal/aso"
-	"github.com/tawhidkuet04/adastra/internal/itunes"
+	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/asacli/internal/aso"
+	"github.com/tawhidkuet04/asacli/internal/itunes"
 )
 
 func asoCountry(c string) string {
@@ -168,7 +168,7 @@ func newReviewsCmd() *cobra.Command {
 			if len(revs) == 0 {
 				fmt.Fprintln(os.Stderr, "no reviews returned — Apple's public RSS reviews feed has been returning")
 				fmt.Fprintln(os.Stderr, "empty results for many storefronts since 2025. For your own apps, the App")
-				fmt.Fprintln(os.Stderr, "Store Connect API exposes reviews reliably (planned: `adastra asc reviews`).")
+				fmt.Fprintln(os.Stderr, "Store Connect API exposes reviews reliably (planned: `asacli asc reviews`).")
 			}
 			var keep []itunes.Review
 			starSet := map[string]bool{}
