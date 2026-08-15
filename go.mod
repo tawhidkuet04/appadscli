@@ -1,4 +1,4 @@
-module github.com/tawhidjoarder/adastra
+module github.com/tawhidkuet04/adastra
 
 go 1.24
 

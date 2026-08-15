@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/tawhidjoarder/adastra/internal/api"
-	"github.com/tawhidjoarder/adastra/internal/store"
+	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/adastra/internal/store"
 )
 
 // ChangePlan is the PR-style proposal file written by `watch` (propose mode)

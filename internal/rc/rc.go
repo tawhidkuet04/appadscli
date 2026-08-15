@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidjoarder/adastra/internal/config"
-	"github.com/tawhidjoarder/adastra/internal/store"
+	"github.com/tawhidkuet04/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/store"
 )
 
 // Credentials for the RevenueCat REST API v2.

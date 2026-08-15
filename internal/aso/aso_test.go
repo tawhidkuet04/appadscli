@@ -3,7 +3,7 @@ package aso
 import (
 	"testing"
 
-	"github.com/tawhidjoarder/adastra/internal/itunes"
+	"github.com/tawhidkuet04/adastra/internal/itunes"
 )
 
 func TestTokens(t *testing.T) {

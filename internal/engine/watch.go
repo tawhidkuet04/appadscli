@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/tawhidjoarder/adastra/internal/api"
-	"github.com/tawhidjoarder/adastra/internal/store"
+	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/adastra/internal/store"
 )
 
 // Guardrails is the guardrails.json schema that drives `adastra watch`.

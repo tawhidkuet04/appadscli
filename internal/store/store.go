@@ -11,7 +11,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/tawhidjoarder/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/config"
 )
 
 // Store wraps the SQLite database.

@@ -1,9 +1,9 @@
 #!/bin/sh
-# adastra installer — https://github.com/tawhidjoarder/adastra
-# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidjoarder/adastra/main/install.sh | sh
+# adastra installer — https://github.com/tawhidkuet04/adastra
+# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/adastra/main/install.sh | sh
 set -eu
 
-REPO="tawhidjoarder/adastra"
+REPO="tawhidkuet04/adastra"
 INSTALL_DIR="${ADASTRA_INSTALL_DIR:-/usr/local/bin}"
 
 main() {

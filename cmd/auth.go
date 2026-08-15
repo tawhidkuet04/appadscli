@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidjoarder/adastra/internal/api"
-	"github.com/tawhidjoarder/adastra/internal/auth"
-	"github.com/tawhidjoarder/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/adastra/internal/auth"
+	"github.com/tawhidkuet04/adastra/internal/config"
 )
 
 func init() {

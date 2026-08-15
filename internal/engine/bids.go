@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/tawhidjoarder/adastra/internal/api"
-	"github.com/tawhidjoarder/adastra/internal/store"
+	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/adastra/internal/store"
 )
 
 // BidAdjustOpts tunes keyword bids in an ad group toward a CPA or ROAS target.

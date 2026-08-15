@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tawhidjoarder/adastra/internal/itunes"
+	"github.com/tawhidkuet04/adastra/internal/itunes"
 )
 
 // Difficulty scores how hard it is to rank organically for a term, from the

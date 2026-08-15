@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidjoarder/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/config"
 )
 
 const tokenURL = "https://appleid.apple.com/auth/oauth2/token"

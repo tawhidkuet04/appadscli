@@ -1,5 +1,5 @@
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
-LDFLAGS := -s -w -X github.com/tawhidjoarder/adastra/cmd.Version=$(VERSION)
+LDFLAGS := -s -w -X github.com/tawhidkuet04/adastra/cmd.Version=$(VERSION)
 
 .PHONY: build test lint install clean release-snapshot
 

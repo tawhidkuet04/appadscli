@@ -19,10 +19,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tawhidjoarder/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/config"
 )
 
-const userAgent = "adastra-cli (+https://github.com/tawhidjoarder/adastra)"
+const userAgent = "adastra-cli (+https://github.com/tawhidkuet04/adastra)"
 
 var (
 	paceMu   sync.Mutex

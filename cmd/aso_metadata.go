@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidjoarder/adastra/internal/api"
-	"github.com/tawhidjoarder/adastra/internal/aso"
-	"github.com/tawhidjoarder/adastra/internal/itunes"
-	"github.com/tawhidjoarder/adastra/internal/store"
+	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/adastra/internal/aso"
+	"github.com/tawhidkuet04/adastra/internal/itunes"
+	"github.com/tawhidkuet04/adastra/internal/store"
 )
 
 func newMetadataCmd() *cobra.Command {

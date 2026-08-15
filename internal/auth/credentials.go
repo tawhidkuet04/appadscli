@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/tawhidjoarder/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/config"
 )
 
 const keychainService = "adastra-apple-ads"

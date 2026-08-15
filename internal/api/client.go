@@ -22,8 +22,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidjoarder/adastra/internal/auth"
-	"github.com/tawhidjoarder/adastra/internal/config"
+	"github.com/tawhidkuet04/adastra/internal/auth"
+	"github.com/tawhidkuet04/adastra/internal/config"
 )
 
 // DefaultBase is the Apple Ads Platform API v1 base URL (no trailing slash;

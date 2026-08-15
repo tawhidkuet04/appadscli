@@ -8,10 +8,10 @@ The complete ASO + Apple Ads CLI for indie developers — Apple Ads Platform API
 management fused with organic rank tracking, keyword intelligence, and
 keyword-level revenue attribution. JSON-first, agent-native, `--dry-run` everywhere.
 
-[![CI](https://github.com/tawhidjoarder/adastra/actions/workflows/ci.yml/badge.svg)](https://github.com/tawhidjoarder/adastra/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tawhidjoarder/adastra)](https://goreportcard.com/report/github.com/tawhidjoarder/adastra)
+[![CI](https://github.com/tawhidkuet04/adastra/actions/workflows/ci.yml/badge.svg)](https://github.com/tawhidkuet04/adastra/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tawhidkuet04/adastra)](https://goreportcard.com/report/github.com/tawhidkuet04/adastra)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/tawhidjoarder/adastra)](https://github.com/tawhidjoarder/adastra/releases)
+[![Release](https://img.shields.io/github/v/release/tawhidkuet04/adastra)](https://github.com/tawhidkuet04/adastra/releases)
 
 *ad astra — "to the stars"*
 
@@ -62,25 +62,25 @@ API sunsets January 26, 2027).
 **Homebrew**
 
 ```sh
-brew install tawhidjoarder/tap/adastra
+brew install tawhidkuet04/tap/adastra
 ```
 
 **Install script** (macOS / Linux)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/tawhidjoarder/adastra/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/adastra/main/install.sh | sh
 ```
 
 **Go**
 
 ```sh
-go install github.com/tawhidjoarder/adastra@latest
+go install github.com/tawhidkuet04/adastra@latest
 ```
 
 **From source**
 
 ```sh
-git clone https://github.com/tawhidjoarder/adastra && cd adastra && make install
+git clone https://github.com/tawhidkuet04/adastra && cd adastra && make install
 ```
 
 ## Quick start

@@ -5,7 +5,7 @@ Thanks for helping build the App Store growth stack.
 ## Setup
 
 ```sh
-git clone https://github.com/tawhidjoarder/adastra && cd adastra
+git clone https://github.com/tawhidkuet04/adastra && cd adastra
 make build && make test
 ```
 

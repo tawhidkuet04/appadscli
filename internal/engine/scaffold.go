@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tawhidjoarder/adastra/internal/api"
-	"github.com/tawhidjoarder/adastra/internal/store"
+	"github.com/tawhidkuet04/adastra/internal/api"
+	"github.com/tawhidkuet04/adastra/internal/store"
 )
 
 // ScaffoldOpts configures the best-practice campaign structure.

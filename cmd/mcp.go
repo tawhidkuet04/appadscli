@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/tawhidjoarder/adastra/internal/mcpserver"
+	"github.com/tawhidkuet04/adastra/internal/mcpserver"
 )
 
 // mcpTools is the curated 1:1 command→tool mapping. Mutating tools require
