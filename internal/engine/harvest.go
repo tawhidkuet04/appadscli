@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tawhidkuet04/asacli/internal/api"
-	"github.com/tawhidkuet04/asacli/internal/store"
+	"github.com/tawhidkuet04/appadscli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/store"
 )
 
 // HarvestOpts configures the harvest loop.

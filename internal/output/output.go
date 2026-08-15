@@ -1,5 +1,5 @@
 // Package output renders command results as table, json, csv, or markdown.
-// Resolution order: --output flag > ASACLI_OUTPUT env > config default >
+// Resolution order: --output flag > APPADSCLI_OUTPUT env > config default >
 // auto (TTY → table, pipe/CI → json).
 package output
 
@@ -34,7 +34,7 @@ type Renderer struct {
 func New(flagVal, def string) *Renderer {
 	f := Format(flagVal)
 	if f == Auto {
-		if env := os.Getenv("ASACLI_OUTPUT"); env != "" {
+		if env := os.Getenv("APPADSCLI_OUTPUT"); env != "" {
 			f = Format(env)
 		} else if def != "" {
 			f = Format(def)

@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✦ asacli
+# ✦ appadscli
 
 **Your App Store growth stack in one binary.**
 
@@ -8,19 +8,19 @@ The complete ASO + Apple Ads CLI for indie developers — Apple Ads Platform API
 management fused with organic rank tracking, keyword intelligence, and
 keyword-level revenue attribution. JSON-first, agent-native, `--dry-run` everywhere.
 
-[![CI](https://github.com/tawhidkuet04/asacli/actions/workflows/ci.yml/badge.svg)](https://github.com/tawhidkuet04/asacli/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tawhidkuet04/asacli)](https://goreportcard.com/report/github.com/tawhidkuet04/asacli)
+[![CI](https://github.com/tawhidkuet04/appadscli/actions/workflows/ci.yml/badge.svg)](https://github.com/tawhidkuet04/appadscli/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tawhidkuet04/appadscli)](https://goreportcard.com/report/github.com/tawhidkuet04/appadscli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/tawhidkuet04/asacli)](https://github.com/tawhidkuet04/asacli/releases)
+[![Release](https://img.shields.io/github/v/release/tawhidkuet04/appadscli)](https://github.com/tawhidkuet04/appadscli/releases)
 
-*ASA CLI — Apple Search Ads and App Store optimization, from your terminal*
+*the Apple Ads + ASO command line — from research to ROAS*
 
 </div>
 
 ---
 
 ```console
-$ asacli aso research "meditation" --expand
+$ appadscli aso research "meditation" --expand
 {
   "term": "meditation",
   "searchPopularity": 5,        ← Apple's own demand score
@@ -29,19 +29,19 @@ $ asacli aso research "meditation" --expand
   "expandedCandidates": [ "sleep", "mindfulness", "breathing", ... ]
 }
 
-$ asacli harvest run --discovery 74130 --target 74131 --min-installs 2 --dry-run
+$ appadscli harvest run --discovery 74130 --target 74131 --min-installs 2 --dry-run
 [ { "action": "promote", "searchTerm": "habit streak app",
     "installs": 6, "cpa": 1.82, "bid": 1.21,
     "reason": "6 installs at 1.82 CPA — promote to exact in target, negate in discovery" } ]
 ```
 
-## Why asacli
+## Why appadscli
 
 Every existing tool has half the picture. ASO tools have no ads management.
 ASA tools have no organic data. Both charge SaaS prices for data Apple gives
 you for free through your own API credentials.
 
-| | ASO tools | ASA tools | **asacli** |
+| | ASO tools | ASA tools | **appadscli** |
 |---|:---:|:---:|:---:|
 | Apple's search popularity (1–5) | 💰 resold | ✗ | ✅ free, from your API |
 | Organic rank tracking | ✅ | ✗ | ✅ local SQLite history |
@@ -62,10 +62,10 @@ API sunsets January 26, 2027).
 **npm** (macOS / Linux / Windows)
 
 ```sh
-npm install -g @tawhidkuet04/asacli
+npm install -g @tawhidkuet04/appadscli
 ```
 
-> Installs the `asacli` command (the package downloads the prebuilt binary for
+> Installs the `appadscli` command (the package downloads the prebuilt binary for
 > your platform and verifies its checksum). The scope prefix is npm's
 > typosquat rule — the unscoped name is blocked by a squatted `asa-cli`
 > placeholder.
@@ -73,30 +73,30 @@ npm install -g @tawhidkuet04/asacli
 **Homebrew**
 
 ```sh
-brew install tawhidkuet04/tap/asacli
+brew install tawhidkuet04/tap/appadscli
 ```
 
 > The `tawhidkuet04/tap/` prefix names the tap the formula lives in. A bare
-> `brew install asacli` requires acceptance into homebrew-core, which gates on
+> `brew install appadscli` requires acceptance into homebrew-core, which gates on
 > notability (30 forks / 30 watchers / 75 stars) — tracked in
-> [#1](https://github.com/tawhidkuet04/asacli/issues/1).
+> [#1](https://github.com/tawhidkuet04/appadscli/issues/1).
 
 **Install script** (macOS / Linux)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/asacli/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/appadscli/main/install.sh | sh
 ```
 
 **Go**
 
 ```sh
-go install github.com/tawhidkuet04/asacli@latest
+go install github.com/tawhidkuet04/appadscli@latest
 ```
 
 **From source**
 
 ```sh
-git clone https://github.com/tawhidkuet04/asacli && cd asacli && make install
+git clone https://github.com/tawhidkuet04/appadscli && cd appadscli && make install
 ```
 
 ## Quick start
@@ -111,30 +111,30 @@ openssl ec -in private-key.pem -pubout -out public-key.pem   # upload this one
 **2. Log in** (credentials go to the macOS keychain, or a 0600 file elsewhere):
 
 ```sh
-asacli auth login \
+appadscli auth login \
   --client-id SEARCHADS.xxxx --team-id SEARCHADS.xxxx \
   --key-id xxxx --private-key ./private-key.pem
-asacli auth doctor          # full diagnostic: key, token, org access
-asacli accounts list
-asacli accounts use <adAccountId>
+appadscli auth doctor          # full diagnostic: key, token, org access
+appadscli accounts list
+appadscli accounts use <adAccountId>
 ```
 
 **3. Go**:
 
 ```sh
-asacli dashboard --since 7d
-asacli aso research "your category" --expand
-asacli campaigns scaffold --app <adamId> --daily-budget 10 --dry-run
+appadscli dashboard --since 7d
+appadscli aso research "your category" --expand
+appadscli campaigns scaffold --app <adamId> --daily-budget 10 --dry-run
 ```
 
 No credentials yet? The ASO half works without any login:
-`asacli aso difficulty`, `aso track`, `aso metadata audit`,
+`appadscli aso difficulty`, `aso track`, `aso metadata audit`,
 `aso competitors gap` all run on public data.
 
 ## The command tree
 
 ```
-asacli
+appadscli
 ├── auth          login · status · doctor · logout
 ├── accounts      list · use
 ├── me
@@ -189,7 +189,7 @@ asacli
 ### 🌱 Scaffold — from zero to best-practice structure
 
 ```sh
-asacli campaigns scaffold --app 1459969523 \
+appadscli campaigns scaffold --app 1459969523 \
   --structure brand,category,competitor,discovery \
   --daily-budget 10 --country us --dry-run
 ```
@@ -200,7 +200,7 @@ ON to mine terms. Drop `--dry-run`, add `--confirm` to create.
 ### ♻️ Harvest — the loop that actually grows accounts
 
 ```sh
-asacli harvest run \
+appadscli harvest run \
   --discovery <discoveryCampaignId> --target <categoryCampaignId> \
   --min-installs 2 --max-cpa 3.00 --auto-negate --dry-run
 ```
@@ -212,19 +212,19 @@ is never promoted twice. Run weekly, or wire it into `watch`.
 ### 📈 Fuse paid and organic
 
 ```sh
-asacli aso track add --app <adamId> --keywords ./kw.txt --countries us,gb
-asacli aso track run                        # cron this
-asacli aso track alerts --drop 5            # CI: exit 1 on rank drops
-asacli aso metadata generate --app <adamId> # keyword field from converting paid terms
+appadscli aso track add --app <adamId> --keywords ./kw.txt --countries us,gb
+appadscli aso track run                        # cron this
+appadscli aso track alerts --drop 5            # CI: exit 1 on rank drops
+appadscli aso metadata generate --app <adamId> # keyword field from converting paid terms
 ```
 
 ### 💰 ROAS down to the keyword (RevenueCat)
 
 ```sh
-asacli rc connect --api-key <v2-key> --project <id>
-asacli rc ingest ./export.csv
-asacli roas report --by keyword --since 30d
-asacli bids adjust --adgroup <id> --target-roas 150% --dry-run
+appadscli rc connect --api-key <v2-key> --project <id>
+appadscli rc ingest ./export.csv
+appadscli roas report --by keyword --since 30d
+appadscli bids adjust --adgroup <id> --target-roas 150% --dry-run
 ```
 
 Two lines of RC SDK setup, no ATT prompt required — see
@@ -233,22 +233,22 @@ Two lines of RC SDK setup, no ATT prompt required — see
 ### 🤖 Autonomy with a leash
 
 ```sh
-asacli watch --config ./guardrails.json     # cron every few hours
-asacli plan show ./asacli-plan-*.json      # review what it wants to do
-asacli plan apply ./asacli-plan-*.json --confirm
+appadscli watch --config ./guardrails.json     # cron every few hours
+appadscli plan show ./appadscli-plan-*.json      # review what it wants to do
+appadscli plan apply ./appadscli-plan-*.json --confirm
 ```
 
 `guardrails.json` ([example](examples/guardrails.example.json)) sets CPA
 ceilings, spend caps, never-pause lists, and the autonomy level:
 `alert` → `propose` → `auto`. Every mutation is logged locally;
-`asacli history verify` cross-checks Apple's change history for changes made
+`appadscli history verify` cross-checks Apple's change history for changes made
 outside the CLI.
 
 ## For AI agents
 
 ```sh
-claude mcp add asacli -- asacli mcp serve   # 32 tools, 1:1 with commands
-asacli install-skills                        # harvest/launch/audit playbooks
+claude mcp add appadscli -- appadscli mcp serve   # 32 tools, 1:1 with commands
+appadscli install-skills                        # harvest/launch/audit playbooks
 ```
 
 Mutating MCP tools require `confirm: true` — otherwise they run `--dry-run`
@@ -259,38 +259,38 @@ and return the plan. An agent must show you changes before it can spend a cent.
 - every mutating command supports `--dry-run`
 - anything that spends, pauses, or deletes requires `--confirm`
   (or an interactive "y")
-- all mutations are logged to `~/.asacli/asacli.db` and verifiable against
-  Apple's change history (`asacli history verify`)
+- all mutations are logged to `~/.appadscli/appadscli.db` and verifiable against
+  Apple's change history (`appadscli history verify`)
 - credentials live in the macOS keychain (or 0600 files), never in configs
 - no telemetry — the API traffic goes to Apple and nowhere else
 
 ## Output
 
 TTY → table. Pipe/CI → JSON. `--output json|table|csv|markdown` always wins;
-`ASACLI_OUTPUT` sets the default.
+`APPADSCLI_OUTPUT` sets the default.
 
 ```sh
-asacli reports keywords --since 7d | jq '.[] | select(.totalInstalls == "0")'
-asacli reports campaigns --since 30d --output csv > spend.csv
-asacli aso track report --output markdown >> weekly-report.md
+appadscli reports keywords --since 7d | jq '.[] | select(.totalInstalls == "0")'
+appadscli reports campaigns --since 30d --output csv > spend.csv
+appadscli aso track report --output markdown >> weekly-report.md
 ```
 
 ## Honest constraints
 
 - **Rank tracking** uses the public iTunes Search API (unofficial for this
-  purpose) — asacli paces requests at 1 rps and caches for an hour.
+  purpose) — appadscli paces requests at 1 rps and caches for an hour.
 - **Reviews**: Apple's public RSS feed has been returning empty results for
   many storefronts since 2025; the command degrades gracefully. ASC API
   support for own-app reviews is planned.
 - **ROAS is a floor** — limit-ad-tracking users land in the organic bucket,
   and Basic Search Ads accounts produce "Unspecified" attribution rows.
-- **No daemon** — 24/7 autonomy is cron/CI running `asacli watch`.
+- **No daemon** — 24/7 autonomy is cron/CI running `appadscli watch`.
 - Each user runs their own credentials. Don't aggregate or resell Apple's data.
 
 ## Development
 
 ```sh
-make build     # build ./asacli
+make build     # build ./appadscli
 make test      # go test ./...
 make lint      # go vet
 make install   # install to GOPATH/bin

@@ -1,11 +1,11 @@
-# Contributing to asacli
+# Contributing to appadscli
 
 Thanks for helping build the App Store growth stack.
 
 ## Setup
 
 ```sh
-git clone https://github.com/tawhidkuet04/asacli && cd asacli
+git clone https://github.com/tawhidkuet04/appadscli && cd appadscli
 make build && make test
 ```
 

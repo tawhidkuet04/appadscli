@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tawhidkuet04/asacli/cmd"
+	"github.com/tawhidkuet04/appadscli/cmd"
 )
 
 //go:embed all:docs/guides all:.agents/skills

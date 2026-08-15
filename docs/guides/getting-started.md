@@ -17,7 +17,7 @@ Roles: read-only commands need **API Read Only**; mutations need
 ## 2. Log in
 
 ```
-asacli auth login \
+appadscli auth login \
   --client-id SEARCHADS.xxxxxxxx \
   --team-id   SEARCHADS.xxxxxxxx \
   --key-id    xxxxxxxx-xxxx-xxxx \
@@ -28,32 +28,32 @@ Credentials go to the macOS keychain (or a 0600 file with `--bypass-keychain`
 / on Linux). Verify everything with:
 
 ```
-asacli auth doctor
+appadscli auth doctor
 ```
 
 ## 3. Pick your ad account
 
 ```
-asacli accounts list
-asacli accounts use <adAccountId>
+appadscli accounts list
+appadscli accounts use <adAccountId>
 ```
 
 ## 4. First commands
 
 ```
-asacli dashboard --since 7d
-asacli campaigns list
-asacli aso research "your category" --expand
+appadscli dashboard --since 7d
+appadscli campaigns list
+appadscli aso research "your category" --expand
 ```
 
 Every command supports `--output json|table|csv|markdown`. In pipes and CI the
-default is JSON; on a TTY it's a table. `ASACLI_OUTPUT` overrides the default,
+default is JSON; on a TTY it's a table. `APPADSCLI_OUTPUT` overrides the default,
 `--output` always wins.
 
 ## Environment variables
 
 | Variable | Effect |
 |---|---|
-| `ASACLI_DIR` | state directory (default `~/.asacli`) |
-| `ASACLI_OUTPUT` | default output format |
-| `ASACLI_API_BASE` | override the Apple Ads API base URL |
+| `APPADSCLI_DIR` | state directory (default `~/.appadscli`) |
+| `APPADSCLI_OUTPUT` | default output format |
+| `APPADSCLI_API_BASE` | override the Apple Ads API base URL |

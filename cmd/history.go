@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/asacli/internal/api"
-	"github.com/tawhidkuet04/asacli/internal/store"
+	"github.com/tawhidkuet04/appadscli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/store"
 )
 
 func init() {
@@ -48,8 +48,8 @@ func init() {
 
 	verify := &cobra.Command{
 		Use:   "verify",
-		Short: "Cross-check Apple's change history against asacli's local mutation log",
-		Long: `Compares mutations recorded locally by asacli against Apple's change
+		Short: "Cross-check Apple's change history against appadscli's local mutation log",
+		Long: `Compares mutations recorded locally by appadscli against Apple's change
 history for the same window. Changes present in Apple's history but absent
 from the local log were made outside this CLI (web UI, another tool, or
 another machine).`,
@@ -92,7 +92,7 @@ another machine).`,
 			fmt.Printf("local mutations (7d): %d   apple-recorded changes: %d   external: %d\n\n",
 				len(local), len(remote), len(external))
 			if len(external) == 0 {
-				fmt.Println("✓ no changes outside asacli detected")
+				fmt.Println("✓ no changes outside appadscli detected")
 				return nil
 			}
 			return render().Rows([]string{"Time", "Entity", "EntityId", "Action", "User"}, external, nil)

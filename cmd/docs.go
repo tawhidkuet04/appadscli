@@ -21,12 +21,12 @@ func init() {
 	docsCmd := &cobra.Command{Use: "docs", Short: "Built-in guides"}
 	show := &cobra.Command{
 		Use:   "show <topic>",
-		Short: "Print a guide (see `asacli docs list`)",
+		Short: "Print a guide (see `appadscli docs list`)",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			b, err := Assets.ReadFile("docs/guides/" + args[0] + ".md")
 			if err != nil {
-				return fmt.Errorf("unknown topic %q — see `asacli docs list`", args[0])
+				return fmt.Errorf("unknown topic %q — see `appadscli docs list`", args[0])
 			}
 			fmt.Print(string(b))
 			return nil

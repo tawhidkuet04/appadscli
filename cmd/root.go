@@ -1,4 +1,4 @@
-// Package cmd wires the asacli command tree.
+// Package cmd wires the appadscli command tree.
 package cmd
 
 import (
@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/asacli/internal/api"
-	"github.com/tawhidkuet04/asacli/internal/config"
-	"github.com/tawhidkuet04/asacli/internal/output"
+	"github.com/tawhidkuet04/appadscli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/config"
+	"github.com/tawhidkuet04/appadscli/internal/output"
 )
 
 // Version is stamped by goreleaser via -ldflags.
@@ -22,9 +22,9 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "asacli",
+	Use:   "appadscli",
 	Short: "Your App Store growth stack in one binary — ASO + Apple Ads CLI",
-	Long: `asacli — the complete ASO + Apple Ads CLI for indie developers.
+	Long: `appadscli — the complete ASO + Apple Ads CLI for indie developers.
 
 Apple Ads Platform API v1 management (campaigns, keywords, bids, reports,
 insights) fused with organic ASO (rank tracking, keyword difficulty,
@@ -40,7 +40,7 @@ func Execute() error { return rootCmd.Execute() }
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&flagOutput, "output", "o", "", "output format: table|json|csv|markdown (default: TTY→table, pipe→json)")
-	rootCmd.PersistentFlags().StringVar(&flagAccount, "account", "", "ad account id (default: `asacli accounts use` selection)")
+	rootCmd.PersistentFlags().StringVar(&flagAccount, "account", "", "ad account id (default: `appadscli accounts use` selection)")
 }
 
 // cfg loads config, tolerating a missing file.

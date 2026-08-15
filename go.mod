@@ -1,4 +1,4 @@
-module github.com/tawhidkuet04/asacli
+module github.com/tawhidkuet04/appadscli
 
 go 1.24
 

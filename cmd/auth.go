@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/asacli/internal/api"
-	"github.com/tawhidkuet04/asacli/internal/auth"
-	"github.com/tawhidkuet04/asacli/internal/config"
+	"github.com/tawhidkuet04/appadscli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/auth"
+	"github.com/tawhidkuet04/appadscli/internal/config"
 )
 
 func init() {
@@ -46,11 +46,11 @@ pair, upload the public key, and note the clientId, teamId, and keyId.`,
 			}
 			fmt.Fprintf(os.Stderr, "✓ credentials stored (%s)\n", where)
 			if _, err := auth.Refresh(cmd.Context()); err != nil {
-				fmt.Fprintln(os.Stderr, "⚠ token exchange failed — credentials saved, but check them with `asacli auth doctor`:")
+				fmt.Fprintln(os.Stderr, "⚠ token exchange failed — credentials saved, but check them with `appadscli auth doctor`:")
 				return err
 			}
 			fmt.Fprintln(os.Stderr, "✓ token exchange OK — you're logged in")
-			fmt.Fprintln(os.Stderr, "next: `asacli accounts list` then `asacli accounts use <id>`")
+			fmt.Fprintln(os.Stderr, "next: `appadscli accounts list` then `appadscli accounts use <id>`")
 			return nil
 		},
 	}
@@ -112,7 +112,7 @@ pair, upload the public key, and note the clientId, teamId, and keyId.`,
 			creds, err := auth.LoadCredentials()
 			step("credentials stored", err)
 			if err != nil {
-				return fmt.Errorf("run `asacli auth login` first")
+				return fmt.Errorf("run `appadscli auth login` first")
 			}
 			step("private key parses & signs", auth.VerifyKey(creds))
 			_, tokErr := auth.Refresh(cmd.Context())
@@ -129,7 +129,7 @@ pair, upload the public key, and note the clientId, teamId, and keyId.`,
 				}
 				if c.AdAccount == "" {
 					ok = false
-					fmt.Println("✗ default ad account          none set — run `asacli accounts use <id>`")
+					fmt.Println("✗ default ad account          none set — run `appadscli accounts use <id>`")
 				} else {
 					fmt.Printf("✓ default ad account          %s\n", c.AdAccount)
 				}

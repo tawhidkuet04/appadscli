@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/tawhidkuet04/asacli/internal/api"
-	"github.com/tawhidkuet04/asacli/internal/store"
+	"github.com/tawhidkuet04/appadscli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/store"
 )
 
 // BidAdjustOpts tunes keyword bids in an ad group toward a CPA or ROAS target.
@@ -49,7 +49,7 @@ func BidPlan(ctx context.Context, c *api.Client, st *store.Store, o BidAdjustOpt
 	if o.TargetROAS > 0 {
 		roasByKw, err = roasBySearchTermKeyword(st)
 		if err != nil {
-			return nil, fmt.Errorf("ROAS mode needs RevenueCat data — run `asacli rc ingest` first: %w", err)
+			return nil, fmt.Errorf("ROAS mode needs RevenueCat data — run `appadscli rc ingest` first: %w", err)
 		}
 	}
 	maxF := o.MaxChangePct / 100

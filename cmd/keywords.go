@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/asacli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/api"
 )
 
 var keywordCols = []string{

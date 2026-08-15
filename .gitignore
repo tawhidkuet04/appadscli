@@ -1,8 +1,8 @@
-/asacli
+/appadscli
 /dist/
 *.pem
 *.p8
-asacli-plan-*.json
+appadscli-plan-*.json
 .DS_Store
 npm/vendor/
 npm/*.tgz

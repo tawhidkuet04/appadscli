@@ -1,4 +1,4 @@
-// Package engine implements asacli's opinionated workflows: campaign
+// Package engine implements appadscli's opinionated workflows: campaign
 // scaffolding, the harvest loop, declarative bid rules, plan/apply, and the
 // watch guardrail evaluator.
 package engine
@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tawhidkuet04/asacli/internal/api"
-	"github.com/tawhidkuet04/asacli/internal/store"
+	"github.com/tawhidkuet04/appadscli/internal/api"
+	"github.com/tawhidkuet04/appadscli/internal/store"
 )
 
 // ScaffoldOpts configures the best-practice campaign structure.
@@ -57,13 +57,13 @@ func ScaffoldPlan(o ScaffoldOpts) *Plan {
 		case "brand":
 			sc.Notes = "add your app/brand name as exact-match keywords; bid low — you own this traffic"
 		case "category":
-			sc.Notes = "add researched category keywords exact-match (see `asacli aso research`)"
+			sc.Notes = "add researched category keywords exact-match (see `appadscli aso research`)"
 		case "competitor":
 			sc.Notes = "add competitor app names exact-match; expect higher CPTs and lower conversion"
 		case "discovery":
 			sc.AdGroupName = kind + "-broad"
 			sc.SearchMatch = true
-			sc.Notes = "Search Match ON + broad match — mines new terms; harvest winners with `asacli harvest run`"
+			sc.Notes = "Search Match ON + broad match — mines new terms; harvest winners with `appadscli harvest run`"
 		default:
 			sc.Notes = "custom campaign kind"
 		}

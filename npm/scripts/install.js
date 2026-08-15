@@ -1,8 +1,8 @@
-// Downloads the asacli binary for this platform from GitHub Releases,
+// Downloads the appadscli binary for this platform from GitHub Releases,
 // verifies its SHA-256 against the release's checksums.txt, and unpacks it
 // into vendor/. No dependencies — Node 18+ stdlib only.
 //
-// Runs as the package postinstall; bin/asacli.js also invokes it lazily if
+// Runs as the package postinstall; bin/appadscli.js also invokes it lazily if
 // the binary is missing (e.g. the package was installed with --ignore-scripts).
 "use strict";
 
@@ -11,7 +11,7 @@ const path = require("path");
 const zlib = require("zlib");
 const crypto = require("crypto");
 
-const REPO = "tawhidkuet04/asacli";
+const REPO = "tawhidkuet04/appadscli";
 const VERSION = require(path.join(__dirname, "..", "package.json")).version;
 
 const PLATFORMS = {
@@ -24,7 +24,7 @@ const PLATFORMS = {
 };
 
 function binaryPath() {
-  const name = process.platform === "win32" ? "asacli.exe" : "asacli";
+  const name = process.platform === "win32" ? "appadscli.exe" : "appadscli";
   return path.join(__dirname, "..", "vendor", name);
 }
 
@@ -89,7 +89,7 @@ async function install() {
       `unsupported platform ${key} — install with Go instead: go install github.com/${REPO}@latest`
     );
   }
-  const asset = `asacli_${VERSION}_${plat.os}_${plat.arch}.${plat.ext}`;
+  const asset = `appadscli_${VERSION}_${plat.os}_${plat.arch}.${plat.ext}`;
   const base = `https://github.com/${REPO}/releases/download/v${VERSION}`;
 
   const archive = await download(`${base}/${asset}`);
@@ -104,7 +104,7 @@ async function install() {
     throw new Error(`checksum mismatch for ${asset}: expected ${expected}, got ${actual}`);
   }
 
-  const wanted = plat.os === "windows" ? "asacli.exe" : "asacli";
+  const wanted = plat.os === "windows" ? "appadscli.exe" : "appadscli";
   let binary = null;
   if (plat.ext === "zip") {
     binary = unzipFile(archive, wanted);
@@ -125,10 +125,10 @@ module.exports = { install, binaryPath };
 
 if (require.main === module) {
   install()
-    .then((dest) => console.log(`asacli ${VERSION} installed (${dest})`))
+    .then((dest) => console.log(`appadscli ${VERSION} installed (${dest})`))
     .catch((err) => {
-      console.error(`asacli install failed: ${err.message}`);
-      console.error(`fallbacks: brew install tawhidkuet04/tap/asacli · go install github.com/${REPO}@latest`);
+      console.error(`appadscli install failed: ${err.message}`);
+      console.error(`fallbacks: brew install tawhidkuet04/tap/appadscli · go install github.com/${REPO}@latest`);
       process.exit(1);
     });
 }

@@ -1,6 +1,6 @@
 # Automation: watch, guardrails, plan/apply
 
-`asacli watch` is the agent tick: run it from cron or GitHub Actions every few
+`appadscli watch` is the agent tick: run it from cron or GitHub Actions every few
 hours and it evaluates your guardrails against live data.
 
 ## guardrails.json
@@ -32,9 +32,9 @@ right, and only then consider `auto`.
 ## PR-style approval
 
 ```
-asacli watch --config ./guardrails.json          # writes asacli-plan-<ts>.json in propose mode
-asacli plan show ./asacli-plan-<ts>.json        # human-readable diff
-asacli plan apply ./asacli-plan-<ts>.json --confirm
+appadscli watch --config ./guardrails.json          # writes appadscli-plan-<ts>.json in propose mode
+appadscli plan show ./appadscli-plan-<ts>.json        # human-readable diff
+appadscli plan apply ./appadscli-plan-<ts>.json --confirm
 ```
 
 ## GitHub Actions example
@@ -48,12 +48,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/asacli/main/install.sh | sh
+      - run: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/appadscli/main/install.sh | sh
       - run: |
-          asacli auth login --client-id "$ADS_CLIENT_ID" --team-id "$ADS_TEAM_ID" \
+          appadscli auth login --client-id "$ADS_CLIENT_ID" --team-id "$ADS_TEAM_ID" \
             --key-id "$ADS_KEY_ID" --private-key <(echo "$ADS_PRIVATE_KEY") --bypass-keychain
-          asacli accounts use "$ADS_ACCOUNT_ID"
-          asacli watch --config ./guardrails.json
+          appadscli accounts use "$ADS_ACCOUNT_ID"
+          appadscli watch --config ./guardrails.json
         env:
           ADS_CLIENT_ID: ${{ secrets.ADS_CLIENT_ID }}
           ADS_TEAM_ID: ${{ secrets.ADS_TEAM_ID }}
@@ -62,5 +62,5 @@ jobs:
           ADS_ACCOUNT_ID: ${{ secrets.ADS_ACCOUNT_ID }}
 ```
 
-Every mutation asacli makes is logged locally; `asacli history verify`
+Every mutation appadscli makes is logged locally; `appadscli history verify`
 cross-checks Apple's change history to detect changes made outside the CLI.

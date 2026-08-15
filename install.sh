@@ -1,10 +1,10 @@
 #!/bin/sh
-# asacli installer — https://github.com/tawhidkuet04/asacli
-# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/asacli/main/install.sh | sh
+# appadscli installer — https://github.com/tawhidkuet04/appadscli
+# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/appadscli/main/install.sh | sh
 set -eu
 
-REPO="tawhidkuet04/asacli"
-INSTALL_DIR="${ASACLI_INSTALL_DIR:-/usr/local/bin}"
+REPO="tawhidkuet04/appadscli"
+INSTALL_DIR="${APPADSCLI_INSTALL_DIR:-/usr/local/bin}"
 
 main() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -23,27 +23,27 @@ main() {
     grep '"tag_name"' | head -1 | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
   [ -n "$tag" ] || err "could not determine latest release — is the first release published?"
 
-  url="https://github.com/$REPO/releases/download/$tag/asacli_${tag#v}_${os}_${arch}.tar.gz"
+  url="https://github.com/$REPO/releases/download/$tag/appadscli_${tag#v}_${os}_${arch}.tar.gz"
   tmp=$(mktemp -d)
   trap 'rm -rf "$tmp"' EXIT
 
-  echo "→ downloading asacli $tag ($os/$arch)"
-  curl -fsSL "$url" -o "$tmp/asacli.tar.gz" || err "download failed: $url"
-  tar -xzf "$tmp/asacli.tar.gz" -C "$tmp"
+  echo "→ downloading appadscli $tag ($os/$arch)"
+  curl -fsSL "$url" -o "$tmp/appadscli.tar.gz" || err "download failed: $url"
+  tar -xzf "$tmp/appadscli.tar.gz" -C "$tmp"
 
   if [ -w "$INSTALL_DIR" ]; then
-    mv "$tmp/asacli" "$INSTALL_DIR/asacli"
+    mv "$tmp/appadscli" "$INSTALL_DIR/appadscli"
   else
     echo "→ $INSTALL_DIR needs sudo"
-    sudo mv "$tmp/asacli" "$INSTALL_DIR/asacli"
+    sudo mv "$tmp/appadscli" "$INSTALL_DIR/appadscli"
   fi
-  chmod +x "$INSTALL_DIR/asacli" 2>/dev/null || sudo chmod +x "$INSTALL_DIR/asacli"
+  chmod +x "$INSTALL_DIR/appadscli" 2>/dev/null || sudo chmod +x "$INSTALL_DIR/appadscli"
 
-  echo "✓ installed: $("$INSTALL_DIR/asacli" --version)"
+  echo "✓ installed: $("$INSTALL_DIR/appadscli" --version)"
   echo ""
   echo "next steps:"
-  echo "  asacli docs show getting-started"
-  echo "  asacli auth login --client-id ... --team-id ... --key-id ... --private-key ./key.pem"
+  echo "  appadscli docs show getting-started"
+  echo "  appadscli auth login --client-id ... --team-id ... --key-id ... --private-key ./key.pem"
 }
 
 err() {

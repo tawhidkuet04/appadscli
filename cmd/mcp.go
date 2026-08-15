@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/asacli/internal/mcpserver"
+	"github.com/tawhidkuet04/appadscli/internal/mcpserver"
 )
 
 // mcpTools is the curated 1:1 command→tool mapping. Mutating tools require
@@ -95,11 +95,11 @@ func init() {
 	mcpCmd := &cobra.Command{Use: "mcp", Short: "Model Context Protocol integration"}
 	serve := &cobra.Command{
 		Use:   "serve",
-		Short: "Run the built-in MCP server (stdio) exposing asacli as agent tools",
-		Long: `Exposes every major asacli command as an MCP tool over stdio.
+		Short: "Run the built-in MCP server (stdio) exposing appadscli as agent tools",
+		Long: `Exposes every major appadscli command as an MCP tool over stdio.
 
-Claude Code:      claude mcp add asacli -- asacli mcp serve
-Claude Desktop:   add {"command":"asacli","args":["mcp","serve"]} to mcpServers
+Claude Code:      claude mcp add appadscli -- appadscli mcp serve
+Claude Desktop:   add {"command":"appadscli","args":["mcp","serve"]} to mcpServers
 
 Mutating tools require the argument confirm=true; without it they run in
 --dry-run mode and return the would-be changes. Reads run as-is.`,

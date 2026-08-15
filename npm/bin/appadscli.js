@@ -10,7 +10,7 @@ const { install, binaryPath } = require("../scripts/install.js");
 async function main() {
   let bin = binaryPath();
   if (!fs.existsSync(bin)) {
-    console.error("asacli binary not present, downloading…");
+    console.error("appadscli binary not present, downloading…");
     bin = await install();
   }
   const res = spawnSync(bin, process.argv.slice(2), { stdio: "inherit" });
@@ -19,6 +19,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(`asacli: ${err.message}`);
+  console.error(`appadscli: ${err.message}`);
   process.exit(1);
 });

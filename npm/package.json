@@ -1,5 +1,5 @@
 {
-  "name": "@tawhidkuet04/asacli",
+  "name": "appadscli",
   "version": "0.2.0",
   "description": "The complete Apple Search Ads + ASO CLI for indie developers — campaigns, keywords, rank tracking, harvest loop, ROAS, MCP server. One binary.",
   "keywords": [
@@ -12,16 +12,16 @@
     "keywords",
     "mcp"
   ],
-  "homepage": "https://github.com/tawhidkuet04/asacli",
+  "homepage": "https://github.com/tawhidkuet04/appadscli",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tawhidkuet04/asacli.git",
+    "url": "git+https://github.com/tawhidkuet04/appadscli.git",
     "directory": "npm"
   },
   "license": "MIT",
   "author": "Tawhid Joarder",
   "bin": {
-    "asacli": "bin/asacli.js"
+    "appadscli": "bin/appadscli.js"
   },
   "files": [
     "bin/",

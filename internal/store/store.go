@@ -1,6 +1,6 @@
-// Package store is asacli's local state: rank history, tracked keywords,
+// Package store is appadscli's local state: rank history, tracked keywords,
 // competitor snapshots, harvest memory, and the mutation audit log.
-// SQLite (pure-Go driver, no CGO) in ~/.asacli/asacli.db.
+// SQLite (pure-Go driver, no CGO) in ~/.appadscli/appadscli.db.
 package store
 
 import (
@@ -11,7 +11,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/tawhidkuet04/asacli/internal/config"
+	"github.com/tawhidkuet04/appadscli/internal/config"
 )
 
 // Store wraps the SQLite database.
@@ -23,7 +23,7 @@ func Open() (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite", filepath.Join(dir, "asacli.db"))
+	db, err := sql.Open("sqlite", filepath.Join(dir, "appadscli.db"))
 	if err != nil {
 		return nil, err
 	}

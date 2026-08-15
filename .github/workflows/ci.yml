@@ -19,4 +19,4 @@ jobs:
       - run: go test ./...
       - run: go build .
       - name: smoke test
-        run: ./asacli --help && ./asacli docs list
+        run: ./appadscli --help && ./appadscli docs list

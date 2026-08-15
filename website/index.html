@@ -1,4 +1,4 @@
-<title>asacli</title>
+<title>appadscli</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Your App Store growth stack in one binary. The complete ASO + Apple Ads CLI for indie developers.">
 <style>
@@ -214,13 +214,13 @@
 <main>
   <div class="wrap">
     <header>
-      <div class="brand"><span class="glyph">✦</span><b>asacli</b></div>
+      <div class="brand"><span class="glyph">✦</span><b>appadscli</b></div>
       <nav aria-label="Sections">
         <a href="#fusion">why</a>
         <a href="#features">features</a>
         <a href="#workflows">workflows</a>
         <a href="#install">install</a>
-        <a href="https://github.com/tawhidkuet04/asacli">github</a>
+        <a href="https://github.com/tawhidkuet04/appadscli">github</a>
       </nav>
     </header>
 
@@ -228,7 +228,7 @@
       <span class="label">ASO + Apple Ads · open source · one binary</span>
       <h1>Your App Store growth stack in <em>one binary</em>.</h1>
       <p class="lede">
-        asacli is the complete <strong>ASO + Apple Ads CLI</strong> for indie developers —
+        appadscli is the complete <strong>ASO + Apple Ads CLI</strong> for indie developers —
         the Apple Ads Platform API v1, organic rank tracking, keyword intelligence, and
         keyword-level revenue in one scriptable binary. Your credentials, your data,
         <strong>no % of spend</strong>.
@@ -236,15 +236,15 @@
       <div class="hero-cta">
         <div class="install-pill">
           <span class="dollar">$</span>
-          <code id="brew-cmd">npm install -g @tawhidkuet04/asacli</code>
+          <code id="brew-cmd">npm install -g @tawhidkuet04/appadscli</code>
           <button type="button" onclick="copyBrew(this)" aria-label="Copy install command">copy</button>
         </div>
-        <a class="gh-link" href="https://github.com/tawhidkuet04/asacli">★ Star on GitHub →</a>
+        <a class="gh-link" href="https://github.com/tawhidkuet04/appadscli">★ Star on GitHub →</a>
       </div>
 
       <div class="term-frame">
         <div class="terminal" aria-label="Terminal demo">
-          <div class="term-bar"><i></i><i></i><i></i><span>~/my-app — asacli</span></div>
+          <div class="term-bar"><i></i><i></i><i></i><span>~/my-app — appadscli</span></div>
           <div class="term-body" id="term"><span class="cursor"></span></div>
         </div>
       </div>
@@ -253,19 +253,19 @@
     <section id="fusion" aria-label="The fusion">
       <div class="sec-head">
         <span class="label">The gap every tool leaves open</span>
-        <h2>ASO tools can't manage ads. Ads tools can't see organic. asacli fuses both.</h2>
+        <h2>ASO tools can't manage ads. Ads tools can't see organic. appadscli fuses both.</h2>
       </div>
       <div class="fusion">
         <div>
           <h3>Apple's demand data</h3>
           <p>The Ads API is the only source of Apple's own numbers: search-term
           popularity (1–5), impression share, suggestions, recommendations.
-          Tools resell this — <code>asacli insights popularity</code> gives it
+          Tools resell this — <code>appadscli insights popularity</code> gives it
           to you free, through your own credentials.</p>
         </div>
         <div>
           <h3>Organic outcomes</h3>
-          <p>The iTunes Search API shows what actually ranks. asacli snapshots
+          <p>The iTunes Search API shows what actually ranks. appadscli snapshots
           your keywords on a schedule into local SQLite —
           <code>aso track report</code> for history, <code>aso track alerts</code>
           to fail CI when ranks drop.</p>
@@ -283,47 +283,47 @@
         <div class="const"><span class="glyph">✦</span>
           <h3>Keyword intelligence</h3>
           <p>Popularity, computed difficulty from the live top-10, suggestion fan-out, bulk lookups across countries.</p>
-          <code>asacli aso research "meditation" --expand</code>
+          <code>appadscli aso research "meditation" --expand</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Rank tracking</h3>
           <p>Cron-friendly snapshots, local history, deltas, and CI-ready exit codes on drops.</p>
-          <code>asacli aso track alerts --drop 5</code>
+          <code>appadscli aso track alerts --drop 5</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Campaign scaffold</h3>
           <p>The best-practice brand / category / competitor / discovery structure in one shot.</p>
-          <code>asacli campaigns scaffold --app 1459969523</code>
+          <code>appadscli campaigns scaffold --app 1459969523</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>The harvest loop</h3>
           <p>Promote converting search terms to exact match, negate them in discovery, kill wasteful spend.</p>
-          <code>asacli harvest run --min-installs 2 --dry-run</code>
+          <code>appadscli harvest run --min-installs 2 --dry-run</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Impression share</h3>
           <p>See who's squeezing you — especially on your own brand terms — straight from Apple's insights.</p>
-          <code>asacli insights impression-share --app …</code>
+          <code>appadscli insights impression-share --app …</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Keyword-level ROAS</h3>
           <p>RevenueCat connector joins spend to real revenue — no ATT prompt required. Bid to profit, not CPA.</p>
-          <code>asacli roas report --by keyword</code>
+          <code>appadscli roas report --by keyword</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Guardrails &amp; watch</h3>
           <p>A cron tick that alerts, proposes a reviewable plan, or auto-applies within caps you set.</p>
-          <code>asacli watch --config guardrails.json</code>
+          <code>appadscli watch --config guardrails.json</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Competitor intel</h3>
           <p>Metadata gap analysis and change-watch: know when a rival edits their subtitle before their users do.</p>
-          <code>asacli aso competitors gap --vs …</code>
+          <code>appadscli aso competitors gap --vs …</code>
         </div>
         <div class="const"><span class="glyph">✦</span>
           <h3>Apple Maps ads</h3>
           <p>Brands, locations, location groups, and Maps reports — a surface with zero indie tooling until now.</p>
-          <code>asacli maps brands list</code>
+          <code>appadscli maps brands list</code>
         </div>
       </div>
     </section>
@@ -337,7 +337,7 @@
       <div class="flow">
         <div>
           <h3><span class="label">01 · harvest</span>Search terms in, profit out.</h3>
-          <p>Discovery campaigns mine what users really type. asacli reads the
+          <p>Discovery campaigns mine what users really type. appadscli reads the
           search-terms report and:</p>
           <ul>
             <li>promotes converting terms to exact match — bid seeded from observed CPT</li>
@@ -346,7 +346,7 @@
             <li>remembers every promotion — a term is never promoted twice</li>
           </ul>
         </div>
-        <div class="codeblock"><span class="p">$</span> <span class="c">asacli harvest run --discovery 74130 --target 74131 \
+        <div class="codeblock"><span class="p">$</span> <span class="c">appadscli harvest run --discovery 74130 --target 74131 \
     --min-installs 2 --max-cpa 3.00 --auto-negate --dry-run</span>
 [
   {
@@ -366,22 +366,22 @@
       <div class="flow rev">
         <div>
           <h3><span class="label">02 · autonomy with a leash</span>Alert → propose → auto.</h3>
-          <p>Black-box automation is why indies distrust ad tools. asacli's
+          <p>Black-box automation is why indies distrust ad tools. appadscli's
           <code class="mono" style="font-size:14px">watch</code> tick runs from cron, evaluates your
           guardrails — CPA breaches, spend anomalies, rank drops, harvest
           candidates — and escalates only as far as you allow. Proposals land
           as plan files you review like a pull request.</p>
         </div>
-        <div class="codeblock"><span class="p">$</span> <span class="c">asacli watch --config guardrails.json</span>
-<span class="g">→ plan written to asacli-plan-20260815.json</span>
+        <div class="codeblock"><span class="p">$</span> <span class="c">appadscli watch --config guardrails.json</span>
+<span class="g">→ plan written to appadscli-plan-20260815.json</span>
 
-<span class="p">$</span> <span class="c">asacli plan show asacli-plan-20260815.json</span>
+<span class="p">$</span> <span class="c">appadscli plan show appadscli-plan-20260815.json</span>
 2 change(s):
  1. pause campaign discovery-us — CPA breach:
     spend 41.20, installs 3 (limit 3.00)
  2. negate wasteful term: "free habit games"
 
-<span class="p">$</span> <span class="c">asacli plan apply asacli-plan-20260815.json --confirm</span></div>
+<span class="p">$</span> <span class="c">appadscli plan apply appadscli-plan-20260815.json --confirm</span></div>
       </div>
 
       <div class="flow">
@@ -392,8 +392,8 @@
           the flags. Mutating tools without <code class="mono" style="font-size:14px">confirm: true</code>
           run as dry-runs: an agent must show you the plan before it can spend a cent.</p>
         </div>
-        <div class="codeblock"><span class="p">$</span> <span class="c">claude mcp add asacli -- asacli mcp serve</span>
-<span class="p">$</span> <span class="c">asacli install-skills</span>
+        <div class="codeblock"><span class="p">$</span> <span class="c">claude mcp add appadscli -- appadscli mcp serve</span>
+<span class="p">$</span> <span class="c">appadscli install-skills</span>
 <span class="g">✓ installed 3 skill file(s) to .claude/skills</span>
   · harvest-playbook   — the promotion loop, safely
   · launch-playbook    — research → scaffold → seed → track
@@ -409,20 +409,20 @@
       <div class="install-grid">
         <div class="install-card">
           <h3>npm</h3>
-          <code>npm install -g @tawhidkuet04/asacli</code>
+          <code>npm install -g @tawhidkuet04/appadscli</code>
         </div>
         <div class="install-card">
           <h3>Homebrew</h3>
-          <code>brew install tawhidkuet04/tap/asacli</code>
+          <code>brew install tawhidkuet04/tap/appadscli</code>
         </div>
         <div class="install-card">
           <h3>Install script</h3>
           <code>curl -fsSL https://raw.githubusercontent.com/\
-tawhidkuet04/asacli/main/install.sh | sh</code>
+tawhidkuet04/appadscli/main/install.sh | sh</code>
         </div>
         <div class="install-card">
           <h3>Go</h3>
-          <code>go install github.com/tawhidkuet04/asacli@latest</code>
+          <code>go install github.com/tawhidkuet04/appadscli@latest</code>
         </div>
       </div>
 
@@ -439,8 +439,8 @@ tawhidkuet04/asacli/main/install.sh | sh</code>
 
     <footer>
       <div class="wrap" style="padding: 0;">
-        <span><span style="color:var(--gold)">✦</span> asacli — <em>the App Store runs on stars; go earn them</em></span>
-        <span>MIT license · <a href="https://github.com/tawhidkuet04/asacli">github.com/tawhidkuet04/asacli</a></span>
+        <span><span style="color:var(--gold)">✦</span> appadscli — <em>the App Store runs on stars; go earn them</em></span>
+        <span>MIT license · <a href="https://github.com/tawhidkuet04/appadscli">github.com/tawhidkuet04/appadscli</a></span>
       </div>
     </footer>
   </div>
@@ -492,15 +492,15 @@ tawhidkuet04/asacli/main/install.sh | sh</code>
     var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     var scenes = [
       {
-        cmd: 'asacli aso research "meditation" --expand',
+        cmd: 'appadscli aso research "meditation" --expand',
         out: '{\n  <span class="cy">"term"</span>: "meditation",\n  <span class="cy">"searchPopularity"</span>: <span class="g">5</span>,          <span class="o">← Apple’s own demand score</span>\n  <span class="cy">"difficulty"</span>: <span class="g">9.6</span>,              <span class="o">← computed from the live top-10</span>\n  <span class="cy">"top10"</span>: [ { "rank": 1, "name": "Insight Timer" }, … ],\n  <span class="cy">"expandedCandidates"</span>: [ "sleep", "mindfulness", "breathing", … ]\n}'
       },
       {
-        cmd: "asacli dashboard --since 7d",
+        cmd: "appadscli dashboard --since 7d",
         out: 'Apple Ads — last 7d\n\n  Spend           <span class="c">142.60</span>\n  Installs            <span class="c">83</span>\n  Avg CPA           <span class="g">1.72</span>\n\nCAMPAIGN        SPEND   TAPS  INSTALLS  CPA\ncategory-us     71.10    204        46  <span class="g">1.55</span>\ndiscovery-us    38.20    118        21  1.82\nbrand-us        21.90     64        13  1.68\ncompetitor-us   11.40     31         3  3.80'
       },
       {
-        cmd: "asacli aso track alerts --drop 5",
+        cmd: "appadscli aso track alerts --drop 5",
         out: '<span class="g">DROP</span> habit tracker [us]: 4 → 11\n<span class="o">Error: 1 keyword(s) dropped ≥5 positions</span>\n<span class="o">exit status 1   ← wire it straight into CI</span>'
       }
     ];

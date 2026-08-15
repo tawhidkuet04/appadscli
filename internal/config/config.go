@@ -1,4 +1,4 @@
-// Package config manages ~/.asacli/config.json: profiles, default ad
+// Package config manages ~/.appadscli/config.json: profiles, default ad
 // account, output preferences, and paths for local state.
 package config
 
@@ -20,13 +20,13 @@ type Config struct {
 	APIBase string `json:"apiBase,omitempty"`
 	// BypassKeychain stores credentials on disk (0600) instead of macOS keychain.
 	BypassKeychain bool `json:"bypassKeychain,omitempty"`
-	// TelemetryOptOut — asacli sends no telemetry; field reserved so it never can silently.
+	// TelemetryOptOut — appadscli sends no telemetry; field reserved so it never can silently.
 	TelemetryOptOut bool `json:"telemetryOptOut,omitempty"`
 }
 
-// Dir returns the asacli state directory (~/.asacli), creating it if needed.
+// Dir returns the appadscli state directory (~/.appadscli), creating it if needed.
 func Dir() (string, error) {
-	if d := os.Getenv("ASACLI_DIR"); d != "" {
+	if d := os.Getenv("APPADSCLI_DIR"); d != "" {
 		if err := os.MkdirAll(d, 0o700); err != nil {
 			return "", err
 		}
@@ -36,7 +36,7 @@ func Dir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	d := filepath.Join(home, ".asacli")
+	d := filepath.Join(home, ".appadscli")
 	if err := os.MkdirAll(d, 0o700); err != nil {
 		return "", err
 	}

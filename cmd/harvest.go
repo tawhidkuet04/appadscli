@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/asacli/internal/engine"
-	"github.com/tawhidkuet04/asacli/internal/store"
+	"github.com/tawhidkuet04/appadscli/internal/engine"
+	"github.com/tawhidkuet04/appadscli/internal/store"
 )
 
 func init() {
@@ -88,7 +88,7 @@ twice. Always try --dry-run first.`,
 	run.Flags().BoolVar(&autoNegate, "auto-negate", false, "negate wasteful terms (taps, zero installs)")
 	run.Flags().Float64Var(&wasteTaps, "waste-taps", 20, "taps with zero installs to call a term wasteful")
 	run.Flags().Float64Var(&bidFactor, "bid-factor", 1.1, "promoted bid = observed CPT × this")
-	run.Flags().StringVar(&rankBy, "rank-by", "installs", "installs|roas (roas needs `asacli rc ingest`)")
+	run.Flags().StringVar(&rankBy, "rank-by", "installs", "installs|roas (roas needs `appadscli rc ingest`)")
 	run.Flags().StringVar(&currency, "currency", "USD", "bid currency for promoted keywords")
 	_ = run.MarkFlagRequired("discovery")
 	_ = run.MarkFlagRequired("target")
