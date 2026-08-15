@@ -24,6 +24,7 @@ brews:
   - repository:
       owner: tawhidkuet04
       name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     homepage: https://github.com/tawhidkuet04/adastra
     description: "Your App Store growth stack in one binary — ASO + Apple Ads CLI"
     license: MIT

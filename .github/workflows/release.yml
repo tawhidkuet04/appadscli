@@ -23,5 +23,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # For the Homebrew tap push, add a HOMEBREW_TAP_GITHUB_TOKEN secret
-          # and set it under brews.repository.token in .goreleaser.yaml.
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
