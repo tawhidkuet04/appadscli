@@ -4,3 +4,6 @@
 *.p8
 asacli-plan-*.json
 .DS_Store
+npm/vendor/
+npm/*.tgz
+node_modules/

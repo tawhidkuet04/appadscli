@@ -181,7 +181,7 @@
   .codeblock .g { color: var(--gold); } .codeblock .cy { color: var(--cyan); }
 
   /* install */
-  .install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .install-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
   @media (max-width: 820px) { .install-grid { grid-template-columns: 1fr; } }
   .install-card { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 10px; padding: 22px; }
   .install-card h3 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
@@ -236,7 +236,7 @@
       <div class="hero-cta">
         <div class="install-pill">
           <span class="dollar">$</span>
-          <code id="brew-cmd">brew install tawhidkuet04/tap/asacli</code>
+          <code id="brew-cmd">npm install -g asacli</code>
           <button type="button" onclick="copyBrew(this)" aria-label="Copy install command">copy</button>
         </div>
         <a class="gh-link" href="https://github.com/tawhidkuet04/asacli">★ Star on GitHub →</a>
@@ -407,6 +407,10 @@
         <h2>One binary. macOS, Linux, Windows.</h2>
       </div>
       <div class="install-grid">
+        <div class="install-card">
+          <h3>npm</h3>
+          <code>npm install -g asacli</code>
+        </div>
         <div class="install-card">
           <h3>Homebrew</h3>
           <code>brew install tawhidkuet04/tap/asacli</code>

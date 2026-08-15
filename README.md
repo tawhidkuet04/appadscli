@@ -59,16 +59,22 @@ API sunsets January 26, 2027).
 
 ## Install
 
+**npm** (macOS / Linux / Windows)
+
+```sh
+npm install -g asacli
+```
+
 **Homebrew**
 
 ```sh
 brew install tawhidkuet04/tap/asacli
 ```
 
-> The `tawhidkuet04/tap/` prefix names the tap this formula lives in. A bare
-> `brew install asacli` requires acceptance into homebrew-core, which has
-> notability requirements (roughly 75+ stars or 30+ forks) — a post-traction
-> goal, tracked in [#1](https://github.com/tawhidkuet04/asacli/issues/1).
+> The `tawhidkuet04/tap/` prefix names the tap the formula lives in. A bare
+> `brew install asacli` requires acceptance into homebrew-core, which gates on
+> notability (30 forks / 30 watchers / 75 stars) — tracked in
+> [#1](https://github.com/tawhidkuet04/asacli/issues/1).
 
 **Install script** (macOS / Linux)
 
