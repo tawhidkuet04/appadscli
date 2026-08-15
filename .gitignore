@@ -1,0 +1,6 @@
+/adastra
+/dist/
+*.pem
+*.p8
+adastra-plan-*.json
+.DS_Store

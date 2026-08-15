@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {
+      "adgroup": "REPLACE_WITH_ADGROUP_ID",
+      "targetCpa": 2.5,
+      "maxChangePct": 15,
+      "since": "14d",
+      "minTaps": 10
+    },
+    {
+      "adgroup": "REPLACE_WITH_ANOTHER_ADGROUP_ID",
+      "targetRoas": 1.5,
+      "maxChangePct": 20,
+      "since": "30d"
+    }
+  ]
+}

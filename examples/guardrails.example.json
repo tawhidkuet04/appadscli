@@ -1,0 +1,21 @@
+{
+  "maxDailySpend": 25.0,
+  "maxCpa": {
+    "default": 3.0,
+    "campaigns": { "brand-us": 1.5 }
+  },
+  "maxBidChangePct": 20,
+  "neverPause": ["brand-us"],
+  "harvest": {
+    "minInstalls": 2,
+    "autoNegate": true,
+    "discovery": "REPLACE_WITH_DISCOVERY_CAMPAIGN_ID",
+    "promoteTo": "REPLACE_WITH_TARGET_CAMPAIGN_ID"
+  },
+  "alerts": {
+    "impressionShareDropPct": 15,
+    "rankDrop": 5,
+    "webhook": ""
+  },
+  "autonomy": "propose"
+}

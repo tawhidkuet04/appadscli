@@ -1,0 +1,36 @@
+version: 2
+project_name: adastra
+
+builds:
+  - main: .
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w -X github.com/tawhidjoarder/adastra/cmd.Version={{.Version}}
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files: [LICENSE, README.md]
+
+checksum:
+  name_template: checksums.txt
+
+brews:
+  - repository:
+      owner: tawhidjoarder
+      name: homebrew-tap
+    homepage: https://github.com/tawhidjoarder/adastra
+    description: "Your App Store growth stack in one binary — ASO + Apple Ads CLI"
+    license: MIT
+    test: |
+      system "#{bin}/adastra --version"
+
+changelog:
+  sort: asc
+  filters:
+    exclude: ["^docs:", "^test:", "^chore:"]
