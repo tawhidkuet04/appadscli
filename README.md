@@ -62,8 +62,13 @@ API sunsets January 26, 2027).
 **npm** (macOS / Linux / Windows)
 
 ```sh
-npm install -g asacli
+npm install -g @tawhidkuet04/asacli
 ```
+
+> Installs the `asacli` command (the package downloads the prebuilt binary for
+> your platform and verifies its checksum). The scope prefix is npm's
+> typosquat rule — the unscoped name is blocked by a squatted `asa-cli`
+> placeholder.
 
 **Homebrew**
 

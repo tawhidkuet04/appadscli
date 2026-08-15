@@ -4,7 +4,7 @@
 ASO CLI for indie developers.
 
 ```sh
-npm install -g asacli
+npm install -g @tawhidkuet04/asacli
 asacli --help
 ```
 

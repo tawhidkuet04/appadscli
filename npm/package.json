@@ -1,5 +1,5 @@
 {
-  "name": "asacli",
+  "name": "@tawhidkuet04/asacli",
   "version": "0.2.0",
   "description": "The complete Apple Search Ads + ASO CLI for indie developers — campaigns, keywords, rank tracking, harvest loop, ROAS, MCP server. One binary.",
   "keywords": [
