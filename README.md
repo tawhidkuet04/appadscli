@@ -62,13 +62,11 @@ API sunsets January 26, 2027).
 **npm** (macOS / Linux / Windows)
 
 ```sh
-npm install -g @tawhidkuet04/appadscli
+npm install -g appadscli
 ```
 
-> Installs the `appadscli` command (the package downloads the prebuilt binary for
-> your platform and verifies its checksum). The scope prefix is npm's
-> typosquat rule — the unscoped name is blocked by a squatted `asa-cli`
-> placeholder.
+> The package downloads the prebuilt binary for your platform and verifies
+> its SHA-256 against the release checksums.
 
 **Homebrew**
 

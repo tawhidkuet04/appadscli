@@ -4,7 +4,7 @@
 ASO CLI for indie developers.
 
 ```sh
-npm install -g @tawhidkuet04/appadscli
+npm install -g appadscli
 appadscli --help
 ```
 
