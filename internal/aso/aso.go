@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tawhidkuet04/appadscli/internal/itunes"
+	"github.com/appadscli/appadscli/internal/itunes"
 )
 
 // Difficulty scores how hard it is to rank organically for a term, from the

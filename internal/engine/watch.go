@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/tawhidkuet04/appadscli/internal/api"
-	"github.com/tawhidkuet04/appadscli/internal/store"
+	"github.com/appadscli/appadscli/internal/api"
+	"github.com/appadscli/appadscli/internal/store"
 )
 
 // Guardrails is the guardrails.json schema that drives `appadscli watch`.

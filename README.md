@@ -8,10 +8,10 @@ The complete ASO + Apple Ads CLI for indie developers — Apple Ads Platform API
 management fused with organic rank tracking, keyword intelligence, and
 keyword-level revenue attribution. JSON-first, agent-native, `--dry-run` everywhere.
 
-[![CI](https://github.com/tawhidkuet04/appadscli/actions/workflows/ci.yml/badge.svg)](https://github.com/tawhidkuet04/appadscli/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tawhidkuet04/appadscli)](https://goreportcard.com/report/github.com/tawhidkuet04/appadscli)
+[![CI](https://github.com/appadscli/appadscli/actions/workflows/ci.yml/badge.svg)](https://github.com/appadscli/appadscli/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/appadscli/appadscli)](https://goreportcard.com/report/github.com/appadscli/appadscli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/tawhidkuet04/appadscli)](https://github.com/tawhidkuet04/appadscli/releases)
+[![Release](https://img.shields.io/github/v/release/appadscli/appadscli)](https://github.com/appadscli/appadscli/releases)
 
 *the Apple Ads + ASO command line — from research to ROAS*
 
@@ -71,30 +71,30 @@ npm install -g appadscli
 **Homebrew**
 
 ```sh
-brew install tawhidkuet04/tap/appadscli
+brew install appadscli/tap/appadscli
 ```
 
-> The `tawhidkuet04/tap/` prefix names the tap the formula lives in. A bare
+> The `appadscli/tap/` prefix names the tap the formula lives in. A bare
 > `brew install appadscli` requires acceptance into homebrew-core, which gates on
 > notability (30 forks / 30 watchers / 75 stars) — tracked in
-> [#1](https://github.com/tawhidkuet04/appadscli/issues/1).
+> [#1](https://github.com/appadscli/appadscli/issues/1).
 
 **Install script** (macOS / Linux)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/appadscli/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/appadscli/appadscli/main/install.sh | sh
 ```
 
 **Go**
 
 ```sh
-go install github.com/tawhidkuet04/appadscli@latest
+go install github.com/appadscli/appadscli@latest
 ```
 
 **From source**
 
 ```sh
-git clone https://github.com/tawhidkuet04/appadscli && cd appadscli && make install
+git clone https://github.com/appadscli/appadscli && cd appadscli && make install
 ```
 
 ## Quick start

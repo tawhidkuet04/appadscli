@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/appadscli/internal/api"
-	"github.com/tawhidkuet04/appadscli/internal/auth"
-	"github.com/tawhidkuet04/appadscli/internal/config"
+	"github.com/appadscli/appadscli/internal/api"
+	"github.com/appadscli/appadscli/internal/auth"
+	"github.com/appadscli/appadscli/internal/config"
 )
 
 func init() {

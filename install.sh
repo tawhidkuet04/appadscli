@@ -1,9 +1,9 @@
 #!/bin/sh
-# appadscli installer — https://github.com/tawhidkuet04/appadscli
-# Usage: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/appadscli/main/install.sh | sh
+# appadscli installer — https://github.com/appadscli/appadscli
+# Usage: curl -fsSL https://raw.githubusercontent.com/appadscli/appadscli/main/install.sh | sh
 set -eu
 
-REPO="tawhidkuet04/appadscli"
+REPO="appadscli/appadscli"
 INSTALL_DIR="${APPADSCLI_INSTALL_DIR:-/usr/local/bin}"
 
 main() {

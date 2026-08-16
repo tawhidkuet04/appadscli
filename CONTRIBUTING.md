@@ -5,7 +5,7 @@ Thanks for helping build the App Store growth stack.
 ## Setup
 
 ```sh
-git clone https://github.com/tawhidkuet04/appadscli && cd appadscli
+git clone https://github.com/appadscli/appadscli && cd appadscli
 make build && make test
 ```
 

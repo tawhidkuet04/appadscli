@@ -7,7 +7,7 @@ builds:
     goos: [darwin, linux, windows]
     goarch: [amd64, arm64]
     ldflags:
-      - -s -w -X github.com/tawhidkuet04/appadscli/cmd.Version={{.Version}}
+      - -s -w -X github.com/appadscli/appadscli/cmd.Version={{.Version}}
 
 archives:
   - formats: [tar.gz]
@@ -22,10 +22,10 @@ checksum:
 
 brews:
   - repository:
-      owner: tawhidkuet04
+      owner: appadscli
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    homepage: https://github.com/tawhidkuet04/appadscli
+    homepage: https://github.com/appadscli/appadscli
     description: "Your App Store growth stack in one binary — ASO + Apple Ads CLI"
     license: MIT
     test: |

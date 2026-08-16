@@ -12,10 +12,10 @@
     "keywords",
     "mcp"
   ],
-  "homepage": "https://github.com/tawhidkuet04/appadscli",
+  "homepage": "https://github.com/appadscli/appadscli",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tawhidkuet04/appadscli.git",
+    "url": "git+https://github.com/appadscli/appadscli.git",
     "directory": "npm"
   },
   "license": "MIT",

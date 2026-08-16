@@ -22,8 +22,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidkuet04/appadscli/internal/auth"
-	"github.com/tawhidkuet04/appadscli/internal/config"
+	"github.com/appadscli/appadscli/internal/auth"
+	"github.com/appadscli/appadscli/internal/config"
 )
 
 // DefaultBase is the Apple Ads Platform API v1 base URL (no trailing slash;

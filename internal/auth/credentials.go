@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/tawhidkuet04/appadscli/internal/config"
+	"github.com/appadscli/appadscli/internal/config"
 )
 
 const keychainService = "appadscli-apple-ads"

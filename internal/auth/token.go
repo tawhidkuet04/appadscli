@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidkuet04/appadscli/internal/config"
+	"github.com/appadscli/appadscli/internal/config"
 )
 
 const tokenURL = "https://appleid.apple.com/auth/oauth2/token"

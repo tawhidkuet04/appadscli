@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tawhidkuet04/appadscli/internal/engine"
-	"github.com/tawhidkuet04/appadscli/internal/store"
+	"github.com/appadscli/appadscli/internal/engine"
+	"github.com/appadscli/appadscli/internal/store"
 )
 
 func init() {

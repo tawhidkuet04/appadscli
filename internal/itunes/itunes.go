@@ -19,10 +19,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tawhidkuet04/appadscli/internal/config"
+	"github.com/appadscli/appadscli/internal/config"
 )
 
-const userAgent = "appadscli-cli (+https://github.com/tawhidkuet04/appadscli)"
+const userAgent = "appadscli-cli (+https://github.com/appadscli/appadscli)"
 
 var (
 	paceMu   sync.Mutex

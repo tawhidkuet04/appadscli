@@ -11,7 +11,7 @@ const path = require("path");
 const zlib = require("zlib");
 const crypto = require("crypto");
 
-const REPO = "tawhidkuet04/appadscli";
+const REPO = "appadscli/appadscli";
 const VERSION = require(path.join(__dirname, "..", "package.json")).version;
 
 const PLATFORMS = {
@@ -128,7 +128,7 @@ if (require.main === module) {
     .then((dest) => console.log(`appadscli ${VERSION} installed (${dest})`))
     .catch((err) => {
       console.error(`appadscli install failed: ${err.message}`);
-      console.error(`fallbacks: brew install tawhidkuet04/tap/appadscli · go install github.com/${REPO}@latest`);
+      console.error(`fallbacks: brew install appadscli/tap/appadscli · go install github.com/${REPO}@latest`);
       process.exit(1);
     });
 }

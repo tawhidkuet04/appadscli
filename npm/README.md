@@ -19,6 +19,6 @@ itself is a single static Go binary.
 - Keyword-level ROAS via RevenueCat
 - Built-in MCP server for AI agents (`appadscli mcp serve`)
 
-Docs, guides, and source: **https://github.com/tawhidkuet04/appadscli**
+Docs, guides, and source: **https://github.com/appadscli/appadscli**
 
 License: MIT

@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tawhidkuet04/appadscli/internal/config"
-	"github.com/tawhidkuet04/appadscli/internal/store"
+	"github.com/appadscli/appadscli/internal/config"
+	"github.com/appadscli/appadscli/internal/store"
 )
 
 // Credentials for the RevenueCat REST API v2.

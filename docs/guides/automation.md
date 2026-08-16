@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: curl -fsSL https://raw.githubusercontent.com/tawhidkuet04/appadscli/main/install.sh | sh
+      - run: curl -fsSL https://raw.githubusercontent.com/appadscli/appadscli/main/install.sh | sh
       - run: |
           appadscli auth login --client-id "$ADS_CLIENT_ID" --team-id "$ADS_TEAM_ID" \
             --key-id "$ADS_KEY_ID" --private-key <(echo "$ADS_PRIVATE_KEY") --bypass-keychain
