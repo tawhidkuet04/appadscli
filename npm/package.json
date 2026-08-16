@@ -1,6 +1,6 @@
 {
   "name": "appadscli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The complete Apple Search Ads + ASO CLI for indie developers — campaigns, keywords, rank tracking, harvest loop, ROAS, MCP server. One binary.",
   "keywords": [
     "apple-search-ads",
