@@ -23,10 +23,10 @@ func recoPath(t string) (string, error) {
 func init() {
 	recoCmd := &cobra.Command{Use: "reco", Short: "Apple's own optimization recommendations"}
 
-	var listType string
+	var listType, listApp string
 	list := &cobra.Command{
 		Use:   "list",
-		Short: "List open recommendations",
+		Short: "List open recommendations for an app",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c := client()
 			if err := c.RequireAccount(); err != nil {
@@ -42,7 +42,8 @@ func init() {
 				if err != nil {
 					return err
 				}
-				items, err := c.Query(cmd.Context(), base+"/query", &api.Selector{}, 0)
+				sel := &api.Selector{Filters: promotedAppFilters(listApp)}
+				items, err := c.Query(cmd.Context(), base+"/query", sel, 0)
 				if err != nil {
 					return err
 				}
@@ -57,6 +58,8 @@ func init() {
 		},
 	}
 	list.Flags().StringVar(&listType, "type", "", "budget|target-cpa (default: both)")
+	list.Flags().StringVar(&listApp, "app", "", "adamId of the promoted app (required)")
+	_ = list.MarkFlagRequired("app")
 
 	applyOrDismiss := func(verb string) *cobra.Command {
 		var t string

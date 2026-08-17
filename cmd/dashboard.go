@@ -34,14 +34,14 @@ func init() {
 			var tSpend, tTaps, tInstalls, tImp float64
 			for _, r := range rows {
 				l := line{
-					name:     api.Field(r, "campaignName"),
+					name:     api.Field(r, "name"),
 					spend:    api.FloatField(r, "localSpend"),
 					taps:     api.FloatField(r, "taps"),
 					installs: api.FloatField(r, "totalInstalls"),
 					i:        api.FloatField(r, "impressions"),
 				}
 				if l.name == "" {
-					l.name = api.Field(r, "campaignId")
+					l.name = api.Field(r, "id")
 				}
 				lines = append(lines, l)
 				tSpend += l.spend

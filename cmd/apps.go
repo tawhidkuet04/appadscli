@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/appadscli/appadscli/internal/api"
@@ -66,7 +67,7 @@ func init() {
 			if err := c.RequireAccount(); err != nil {
 				return err
 			}
-			sel := api.EqCond("adamId", args[0])
+			sel := api.EqFilter("adamId", args[0])
 			items, err := c.Query(cmd.Context(), "/v1/eligibilities/apps/query", sel, 0)
 			if err != nil {
 				return err
@@ -109,16 +110,21 @@ func init() {
 		},
 	}
 
+	// The endpoint answers per storefront, not per app: each row is a country
+	// with the languages ads can run in there.
+	var langCountry string
 	languages := &cobra.Command{
-		Use:   "languages <adamId>",
-		Short: "Supported languages/locales for an app's ads",
-		Args:  cobra.ExactArgs(1),
+		Use:   "languages",
+		Short: "Ad languages/locales supported per storefront",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c := client()
 			if err := c.RequireAccount(); err != nil {
 				return err
 			}
-			sel := api.EqCond("adamId", args[0])
+			sel := &api.Selector{}
+			if langCountry != "" {
+				sel = api.EqFilter("countryCode", strings.ToUpper(langCountry))
+			}
 			items, err := c.Query(cmd.Context(), "/v1/metadata/apps/supported-languages/query", sel, 0)
 			if err != nil {
 				return err
@@ -126,6 +132,7 @@ func init() {
 			return render().JSON(items)
 		},
 	}
+	languages.Flags().StringVar(&langCountry, "country", "", "storefront code, e.g. US (default: all)")
 
 	appsCmd.AddCommand(search, get, eligibility, rejections, languages)
 	rootCmd.AddCommand(appsCmd)
@@ -142,7 +149,8 @@ func init() {
 			if err := c.RequireAccount(); err != nil {
 				return err
 			}
-			q := url.Values{"query": {args[0]}}
+			// supplySource is mandatory even though it doesn't narrow the results.
+			q := url.Values{"query": {args[0]}, "supplySource": {"APPSTORE_SEARCH_RESULTS"}}
 			if entity != "" {
 				q.Set("entity", entity)
 			}

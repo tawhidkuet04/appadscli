@@ -121,8 +121,7 @@ pair, upload the public key, and note the clientId, teamId, and keyId.`,
 				c := client()
 				var me json.RawMessage
 				step("GET /v1/me", c.Get(cmd.Context(), "/v1/me", &me))
-				var acls []json.RawMessage
-				aclErr := c.Get(cmd.Context(), "/v1/acls", &acls)
+				acls, aclErr := fetchACLs(cmd, c)
 				step("GET /v1/acls (org access)", aclErr)
 				if aclErr == nil {
 					fmt.Printf("  → %d ad account(s) accessible\n", len(acls))
@@ -163,13 +162,13 @@ pair, upload the public key, and note the clientId, teamId, and keyId.`,
 		Use:   "list",
 		Short: "Ad accounts you can access (from /v1/acls)",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var acls []json.RawMessage
-			if err := client().Get(cmd.Context(), "/v1/acls", &acls); err != nil {
+			acls, err := fetchACLs(cmd, client())
+			if err != nil {
 				return err
 			}
 			h, rows := api.Table(acls, []string{
-				"AdAccountId=adAccountId", "OrgId=orgId", "Name=orgName",
-				"Currency=currency", "TimeZone=timeZone", "Roles=roleNames", "PaymentModel=paymentModel",
+				"AdAccountId=adAccount.id", "Name=adAccount.name",
+				"OrgId=adAccount.orgId", "Roles=roles",
 			})
 			return render().Rows(h, rows, acls)
 		},
@@ -203,4 +202,17 @@ pair, upload the public key, and note the clientId, teamId, and keyId.`,
 		},
 	}
 	rootCmd.AddCommand(meCmd)
+}
+
+// fetchACLs reads the ad accounts the credentials can reach. /v1/acls answers
+// with {"result":{"acls":[{roles, adAccount{id,name,orgId}}]}}, so the list
+// sits one level below the envelope's result.
+func fetchACLs(cmd *cobra.Command, c *api.Client) ([]json.RawMessage, error) {
+	var result struct {
+		ACLs []json.RawMessage `json:"acls"`
+	}
+	if err := c.Get(cmd.Context(), "/v1/acls", &result); err != nil {
+		return nil, err
+	}
+	return result.ACLs, nil
 }

@@ -42,8 +42,8 @@ func HarvestPlan(ctx context.Context, c *api.Client, st *store.Store, o HarvestO
 	if err != nil {
 		return nil, err
 	}
-	req.Selector.Conditions = []api.Condition{{
-		Field: "campaignId", Operator: "EQUALS", Values: []string{o.DiscoveryCampaign},
+	req.Filters = []api.Filter{{
+		Field: "campaignId", Operator: "EQUALS", Value: o.DiscoveryCampaign,
 	}}
 	rows, err := c.RunReport(ctx, "/v1/reports/apps/searchterms/query", req)
 	if err != nil {
@@ -103,7 +103,7 @@ func HarvestPlan(ctx context.Context, c *api.Client, st *store.Store, o HarvestO
 }
 
 func keyForTerm(r json.RawMessage) string {
-	return api.Field(r, "keywordId")
+	return api.Field(r, "keyword.id")
 }
 
 // HarvestApply executes the actions: bulk-create exact keywords in the
@@ -122,35 +122,35 @@ func HarvestApply(ctx context.Context, c *api.Client, st *store.Store, o Harvest
 				"adGroupId": json.Number(targetAG),
 				"text":      a.SearchTerm,
 				"matchType": "EXACT",
-				"bidAmount": map[string]string{"amount": api.FmtUSD(a.Bid), "currency": currency},
-				"status":    "ACTIVE",
+				"bid":       map[string]string{"amount": api.FmtUSD(a.Bid), "currency": currency},
+				"status":    "ENABLED",
 			})
 			negatives = append(negatives, map[string]any{
 				"campaignId": json.Number(o.DiscoveryCampaign),
 				"text":       a.SearchTerm,
 				"matchType":  "EXACT",
-				"status":     "ACTIVE",
+				"status":     "ENABLED",
 			})
 		case "negate-waste":
 			negatives = append(negatives, map[string]any{
 				"campaignId": json.Number(o.DiscoveryCampaign),
 				"text":       a.SearchTerm,
 				"matchType":  "EXACT",
-				"status":     "ACTIVE",
+				"status":     "ENABLED",
 			})
 		}
 	}
 	result := map[string]any{}
 	if len(creates) > 0 {
 		var out json.RawMessage
-		if err := c.Post(ctx, "/v1/keywords/bulk-create", creates, &out); err != nil {
+		if err := c.Post(ctx, "/v1/keywords/bulk-create", api.BulkBody(creates), &out); err != nil {
 			return nil, fmt.Errorf("promoting keywords: %w", err)
 		}
 		result["promoted"] = out
 	}
 	if len(negatives) > 0 {
 		var out json.RawMessage
-		if err := c.Post(ctx, "/v1/negative-keywords/bulk-create", negatives, &out); err != nil {
+		if err := c.Post(ctx, "/v1/negative-keywords/bulk-create", api.BulkBody(negatives), &out); err != nil {
 			return nil, fmt.Errorf("adding negatives: %w", err)
 		}
 		result["negated"] = out
@@ -167,8 +167,21 @@ func HarvestApply(ctx context.Context, c *api.Client, st *store.Store, o Harvest
 	return result, nil
 }
 
+// adGroupCampaign resolves the campaign an ad group belongs to.
+func adGroupCampaign(ctx context.Context, c *api.Client, adGroupID string) (string, error) {
+	var ag json.RawMessage
+	if err := c.Get(ctx, "/v1/adgroups/"+adGroupID, &ag); err != nil {
+		return "", err
+	}
+	id := api.Field(ag, "campaignId")
+	if id == "" {
+		return "", fmt.Errorf("ad group %s reports no campaignId", adGroupID)
+	}
+	return id, nil
+}
+
 func firstAdGroup(ctx context.Context, c *api.Client, campaignID string) (string, error) {
-	items, err := c.Query(ctx, "/v1/adgroups/query", api.EqCond("campaignId", campaignID), 1)
+	items, err := c.Query(ctx, "/v1/adgroups/query", api.EqFilter("campaignId", campaignID), 1)
 	if err != nil {
 		return "", err
 	}

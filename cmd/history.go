@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -24,15 +25,7 @@ func init() {
 			if err != nil {
 				return err
 			}
-			sel := &api.Selector{Conditions: []api.Condition{{
-				Field: "timestamp", Operator: "GREATER_THAN", Values: []string{start.Format("2006-01-02")},
-			}}}
-			if entity != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{
-					Field: "entityType", Operator: "EQUALS", Values: []string{strings.ToUpper(entity)},
-				})
-			}
-			items, err := c.Query(cmd.Context(), "/v1/change-history/query", sel, 0)
+			items, err := changeHistory(cmd, c, start, time.Now(), entity)
 			if err != nil {
 				return err
 			}
@@ -43,8 +36,8 @@ func init() {
 			return render().Rows(h, rows, items)
 		},
 	}
-	historyCmd.Flags().StringVar(&since, "since", "7d", "window start")
-	historyCmd.Flags().StringVar(&entity, "entity", "", "campaign|adgroup|keyword|...")
+	historyCmd.Flags().StringVar(&since, "since", "7d", "window start (Apple keeps 30 days)")
+	historyCmd.Flags().StringVar(&entity, "entity", "", "campaign|adgroup|keyword|ad|org (default: all)")
 
 	verify := &cobra.Command{
 		Use:   "verify",
@@ -68,10 +61,7 @@ another machine).`,
 			if err != nil {
 				return err
 			}
-			sel := &api.Selector{Conditions: []api.Condition{{
-				Field: "timestamp", Operator: "GREATER_THAN", Values: []string{localSince.Format("2006-01-02")},
-			}}}
-			remote, err := c.Query(cmd.Context(), "/v1/change-history/query", sel, 0)
+			remote, err := changeHistory(cmd, c, localSince, time.Now(), "")
 			if err != nil {
 				return err
 			}
@@ -101,4 +91,32 @@ another machine).`,
 
 	historyCmd.AddCommand(verify)
 	rootCmd.AddCommand(historyCmd)
+}
+
+// changeHistoryEntities are the entity types v1 change history serves. The
+// endpoint takes exactly one per query, so "everything" means one call each.
+var changeHistoryEntities = []string{"CAMPAIGN", "ADGROUP", "KEYWORD", "AD", "ORG"}
+
+// changeHistory queries Apple's change history for a window. entity == ""
+// walks every entity type; Apple caps the window at 30 days.
+func changeHistory(cmd *cobra.Command, c *api.Client, start, end time.Time, entity string) ([]json.RawMessage, error) {
+	entities := changeHistoryEntities
+	if entity != "" {
+		entities = []string{strings.ToUpper(entity)}
+	}
+	var all []json.RawMessage
+	for _, e := range entities {
+		sel := &api.Selector{Filters: []api.Filter{
+			{Field: "eventTime", Operator: "BETWEEN", Value: []string{
+				start.Format("2006-01-02"), end.Format("2006-01-02"),
+			}},
+			{Field: "entityType", Operator: "EQUALS", Value: e},
+		}}
+		items, err := c.Query(cmd.Context(), "/v1/change-history/query", sel, 0)
+		if err != nil {
+			return nil, err
+		}
+		all = append(all, items...)
+	}
+	return all, nil
 }

@@ -84,6 +84,16 @@ func confirmOrAbort(cmd *cobra.Command, action string) (bool, error) {
 	return false, fmt.Errorf("refusing to %s without --confirm (non-interactive)", action)
 }
 
+// promotedAppFilters scopes the endpoints that ask which app is being promoted
+// — suggestions and recommendations. Both reject scalar filter values, so the
+// app id and type go in as single-element lists.
+func promotedAppFilters(adamID string) []api.Filter {
+	return []api.Filter{
+		{Field: "promotedObjectId", Operator: "EQUALS", Value: []string{adamID}},
+		{Field: "promotedObjectType", Operator: "EQUALS", Value: []string{"APPSTORE_APP"}},
+	}
+}
+
 // addMutationFlags attaches the standard safety flags.
 func addMutationFlags(cmd *cobra.Command) {
 	cmd.Flags().Bool("dry-run", false, "print what would happen without doing it")

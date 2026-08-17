@@ -11,15 +11,22 @@ import (
 
 // ReportRequest is the reporting query body shared by all report endpoints.
 type ReportRequest struct {
-	StartTime                  string    `json:"startTime"`
-	EndTime                    string    `json:"endTime"`
-	Granularity                string    `json:"granularity,omitempty"` // HOURLY|DAILY|WEEKLY|MONTHLY
-	TimeZone                   string    `json:"timeZone,omitempty"`    // ORTZ|UTC
-	Selector                   *Selector `json:"selector,omitempty"`
-	GroupBy                    []string  `json:"groupBy,omitempty"`
-	ReturnRowTotals            bool      `json:"returnRowTotals"`
-	ReturnGrandTotals          bool      `json:"returnGrandTotals"`
-	ReturnRecordsWithNoMetrics bool      `json:"returnRecordsWithNoMetrics"`
+	TimeRange  *TimeRange  `json:"timeRange"`
+	Fields     []string    `json:"fields,omitempty"`
+	Filters    []Filter    `json:"filters,omitempty"`
+	Sorting    []Sort      `json:"sorting,omitempty"`
+	GroupBy    []string    `json:"groupBy,omitempty"`
+	Pagination *Pagination `json:"pagination,omitempty"`
+}
+
+// TimeRange is the required reporting window. Granularity splits rows per
+// period (HOURLY|DAILY|WEEKLY|MONTHLY, and the window has to be short enough
+// for the period picked); empty means totals only.
+type TimeRange struct {
+	Start       string `json:"start"` // YYYY-MM-DD
+	End         string `json:"end"`   // YYYY-MM-DD
+	Granularity string `json:"granularity,omitempty"`
+	TimeZone    string `json:"timeZone,omitempty"` // ORTZ|UTC
 }
 
 // ParseSince turns "30d", "7d", "24h", or a YYYY-MM-DD date into a start time.
@@ -57,18 +64,14 @@ func NewReportRequest(since string, granularity string) (*ReportRequest, error) 
 		return nil, err
 	}
 	req := &ReportRequest{
-		StartTime:       start.Format("2006-01-02"),
-		EndTime:         now.Format("2006-01-02"),
-		TimeZone:        "ORTZ",
-		ReturnRowTotals: false,
-		Selector: &Selector{
-			OrderBy:    []OrderBy{{Field: "localSpend", SortOrder: "DESCENDING"}},
-			Pagination: &Pagination{Offset: 0, Limit: 1000},
+		TimeRange: &TimeRange{
+			Start:       start.Format("2006-01-02"),
+			End:         now.Format("2006-01-02"),
+			Granularity: strings.ToUpper(granularity),
+			TimeZone:    "ORTZ",
 		},
-	}
-	if granularity != "" {
-		req.Granularity = strings.ToUpper(granularity)
-		// Row totals are unavailable when granularity is set.
+		Sorting:    []Sort{{Field: "localSpend", Order: "DESC"}},
+		Pagination: &Pagination{Offset: 0, PageSize: 1000},
 	}
 	return req, nil
 }
@@ -81,24 +84,22 @@ func (c *Client) RunReport(ctx context.Context, path string, req *ReportRequest)
 	if err != nil {
 		return nil, err
 	}
-	if env == nil || len(env.Data) == 0 {
+	if env == nil || len(env.Result) == 0 {
 		return nil, nil
 	}
-	// Expected shape: {"reportingDataResponse":{"row":[{metadata, total|granularity}]}}
+	// Expected shape: {"result":{"rows":[{metadata, totalMetrics, granularMetrics}]}}
 	var wrapper struct {
-		ReportingDataResponse struct {
-			Row []json.RawMessage `json:"row"`
-		} `json:"reportingDataResponse"`
+		Rows []json.RawMessage `json:"rows"`
 	}
-	if err := json.Unmarshal(env.Data, &wrapper); err == nil && len(wrapper.ReportingDataResponse.Row) > 0 {
-		return flattenRows(wrapper.ReportingDataResponse.Row), nil
+	if err := json.Unmarshal(env.Result, &wrapper); err == nil {
+		return flattenRows(wrapper.Rows), nil
 	}
-	// Fallback: data is already an array of rows.
+	// Fallback: the result is already an array of rows.
 	var rows []json.RawMessage
-	if err := json.Unmarshal(env.Data, &rows); err == nil {
+	if err := json.Unmarshal(env.Result, &rows); err == nil {
 		return flattenRows(rows), nil
 	}
-	return []json.RawMessage{env.Data}, nil
+	return []json.RawMessage{env.Result}, nil
 }
 
 func flattenRows(rows []json.RawMessage) []json.RawMessage {
@@ -111,7 +112,7 @@ func flattenRows(rows []json.RawMessage) []json.RawMessage {
 		}
 		flat := map[string]any{}
 		mergeObj(flat, row["metadata"])
-		if g, ok := row["granularity"]; ok {
+		if g, ok := row["granularMetrics"]; ok {
 			// Per-period rows: emit one flat row per period.
 			var periods []json.RawMessage
 			if json.Unmarshal(g, &periods) == nil && len(periods) > 0 {
@@ -128,7 +129,7 @@ func flattenRows(rows []json.RawMessage) []json.RawMessage {
 				continue
 			}
 		}
-		mergeObj(flat, row["total"])
+		mergeObj(flat, row["totalMetrics"])
 		if len(flat) == 0 {
 			out = append(out, r)
 			continue

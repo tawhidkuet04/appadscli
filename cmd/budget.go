@@ -29,14 +29,15 @@ func init() {
 			if err := c.Get(cmd.Context(), "/v1/campaigns/"+pacingCampaign, &camp); err != nil {
 				return err
 			}
-			daily := api.FloatField(camp, "dailyBudgetAmount.amount")
+			daily := api.FloatField(camp, "dailyBudget.value.amount")
 			now := time.Now()
 			monthStart := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
 			req, err := api.NewReportRequest(monthStart.Format("2006-01-02"), "")
 			if err != nil {
 				return err
 			}
-			req.Selector.Conditions = []api.Condition{{Field: "campaignId", Operator: "EQUALS", Values: []string{pacingCampaign}}}
+			// Campaign reports key the campaign as `id`, not `campaignId`.
+			req.Filters = []api.Filter{{Field: "id", Operator: "EQUALS", Value: pacingCampaign}}
 			rows, err := c.RunReport(cmd.Context(), "/v1/reports/apps/campaigns/query", req)
 			if err != nil {
 				return err
@@ -77,7 +78,7 @@ func init() {
 				return err
 			}
 			h, rows := api.Table(items, []string{
-				"Id=id", "Name=name", "Status=status", "Budget=$money:budgetAmount", "StartDate=startDate", "EndDate=endDate",
+				"Id=id", "Name=name", "Status=status", "Budget=$money:value", "StartTime=startTime", "EndTime=endTime",
 			})
 			return render().Rows(h, rows, items)
 		},
@@ -95,8 +96,8 @@ func init() {
 				return err
 			}
 			body := map[string]any{
-				"name":         oName,
-				"budgetAmount": map[string]string{"amount": api.FmtUSD(oAmount), "currency": oCurrency},
+				"name":  oName,
+				"value": map[string]string{"amount": api.FmtUSD(oAmount), "currency": oCurrency},
 			}
 			var out json.RawMessage
 			if err := c.Post(cmd.Context(), "/v1/shared-budgets", body, &out); err != nil {
@@ -123,7 +124,7 @@ func init() {
 			if err := c.Get(cmd.Context(), "/v1/shared-budgets/"+args[0], &cur); err != nil {
 				return err
 			}
-			curr := api.Field(cur, "budgetAmount.currency")
+			curr := api.Field(cur, "value.currency")
 			if curr == "" {
 				curr = "USD"
 			}
@@ -131,7 +132,7 @@ func init() {
 			if err != nil || !ok {
 				return err
 			}
-			body := map[string]any{"budgetAmount": map[string]string{"amount": api.FmtUSD(uAmount), "currency": curr}}
+			body := map[string]any{"value": map[string]string{"amount": api.FmtUSD(uAmount), "currency": curr}}
 			var out json.RawMessage
 			if err := c.Put(cmd.Context(), "/v1/shared-budgets/"+args[0], body, &out); err != nil {
 				return err

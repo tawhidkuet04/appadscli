@@ -2,12 +2,18 @@
 // ad-account context header, rate-limit-aware transport (token bucket +
 // 429 backoff), and the query/selector pagination pattern.
 //
-// Contract (validated against Apple's docs and shipping v1 clients):
+// Contract (validated against the live api.ads.apple.com/v1):
 //   - Base URL https://api.ads.apple.com/v1/
 //   - Ad-account-scoped requests send "X-AP-Context: adAccountId=<id>;"
 //   - GET /me, /acls, /orgs/{id}, /advertiser-resources, POST /ad-accounts
 //     omit the context header
-//   - List endpoints are POST {resource}/query with a Selector body
+//   - Successful responses wrap the payload in {"result": …} and paged ones
+//     add {"pagination": {offset, pageSize, totalCount}}
+//   - Failures arrive as {"error": {code, message, details[]}} or
+//     {"errors": [...]} — change-history serves them under HTTP 200
+//   - List endpoints are POST {resource}/query with a Selector body:
+//     {fields, filters[{field, operator, value}], sorting[{field, order}],
+//     pagination{offset, pageSize}}
 package api
 
 import (
@@ -45,29 +51,69 @@ type APIError struct {
 	Body   string
 }
 
+// errorDetail is one entry of Apple's error payload.
+type errorDetail struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Info    struct {
+		Field string `json:"field"`
+	} `json:"info"`
+}
+
+// errorPayload covers the error shapes v1 serves: a nested {"error": …} object
+// with details, a bare {"errors": [...]} list, and — on some 404s — the error
+// object flattened into the response root.
+type errorPayload struct {
+	Error struct {
+		Code    string        `json:"code"`
+		Message string        `json:"message"`
+		Details []errorDetail `json:"details"`
+	} `json:"error"`
+	Errors  []errorDetail `json:"errors"`
+	Message string        `json:"message"`
+	Details []errorDetail `json:"details"`
+}
+
 func (e *APIError) Error() string {
 	msg := strings.TrimSpace(e.Body)
-	var parsed struct {
-		Error struct {
-			Errors []struct {
-				MessageCode string `json:"messageCode"`
-				Message     string `json:"message"`
-				Field       string `json:"field"`
-			} `json:"errors"`
-		} `json:"error"`
-	}
-	if json.Unmarshal([]byte(e.Body), &parsed) == nil && len(parsed.Error.Errors) > 0 {
-		parts := make([]string, 0, len(parsed.Error.Errors))
-		for _, er := range parsed.Error.Errors {
-			p := er.Message
-			if er.Field != "" {
-				p = er.Field + ": " + p
-			}
-			parts = append(parts, p)
+	var parsed errorPayload
+	if json.Unmarshal([]byte(e.Body), &parsed) == nil {
+		details := parsed.Error.Details
+		if len(details) == 0 {
+			details = parsed.Errors
 		}
-		msg = strings.Join(parts, "; ")
+		if len(details) == 0 {
+			details = parsed.Details
+		}
+		switch parts := detailMessages(details); {
+		case len(parts) > 0:
+			msg = strings.Join(parts, "; ")
+		case parsed.Error.Message != "":
+			msg = parsed.Error.Message
+		case parsed.Message != "":
+			msg = parsed.Message
+		}
 	}
 	return fmt.Sprintf("apple ads api: HTTP %d: %s", e.Status, msg)
+}
+
+// detailMessages renders error details as "field: message" where Apple names a field.
+func detailMessages(details []errorDetail) []string {
+	parts := make([]string, 0, len(details))
+	for _, d := range details {
+		p := d.Message
+		if p == "" {
+			p = d.Code
+		}
+		if p == "" {
+			continue
+		}
+		if d.Info.Field != "" {
+			p = d.Info.Field + ": " + p
+		}
+		parts = append(parts, p)
+	}
+	return parts
 }
 
 // IsNotFound reports whether err is an APIError with status 404.
@@ -105,7 +151,7 @@ func (c *Client) RequireAccount() error {
 	return nil
 }
 
-// Get issues a GET and decodes the `data` envelope into out (if non-nil).
+// Get issues a GET and decodes the `result` envelope into out (if non-nil).
 func (c *Client) Get(ctx context.Context, path string, out any) error {
 	return c.do(ctx, "GET", path, nil, out)
 }
@@ -125,14 +171,18 @@ func (c *Client) Delete(ctx context.Context, path string) error {
 	return c.do(ctx, "DELETE", path, nil, nil)
 }
 
-// Envelope is Apple's standard response wrapper.
+// Envelope is Apple's standard response wrapper: the payload under `result`
+// plus page counters on list endpoints.
 type Envelope struct {
-	Data       json.RawMessage `json:"data"`
-	Pagination *struct {
-		TotalResults int `json:"totalResults"`
-		StartIndex   int `json:"startIndex"`
-		ItemsPerPage int `json:"itemsPerPage"`
-	} `json:"pagination"`
+	Result     json.RawMessage `json:"result"`
+	Pagination *PageInfo       `json:"pagination"`
+}
+
+// PageInfo is the page counter block v1 returns alongside a list result.
+type PageInfo struct {
+	Offset     int `json:"offset"`
+	PageSize   int `json:"pageSize"`
+	TotalCount int `json:"totalCount"`
 }
 
 func (c *Client) do(ctx context.Context, method, path string, body, out any) error {
@@ -140,8 +190,8 @@ func (c *Client) do(ctx context.Context, method, path string, body, out any) err
 	if err != nil {
 		return err
 	}
-	if out != nil && env != nil && len(env.Data) > 0 {
-		if err := json.Unmarshal(env.Data, out); err != nil {
+	if out != nil && env != nil && len(env.Result) > 0 {
+		if err := json.Unmarshal(env.Result, out); err != nil {
 			return fmt.Errorf("decoding %s %s: %w", method, path, err)
 		}
 	}
@@ -215,13 +265,35 @@ func (c *Client) DoRaw(ctx context.Context, method, path string, body any) (*Env
 		if len(rb) == 0 {
 			return nil, nil
 		}
-		var env Envelope
-		if err := json.Unmarshal(rb, &env); err != nil || len(env.Data) == 0 {
-			// Not an enveloped response; treat the whole body as data.
-			return &Envelope{Data: rb}, nil
-		}
-		return &env, nil
+		return parseEnvelope(resp.StatusCode, rb)
 	}
+}
+
+// parseEnvelope unwraps `result`, and surfaces the error payloads Apple also
+// serves under 2xx (change-history does this) as APIError.
+func parseEnvelope(status int, rb []byte) (*Envelope, error) {
+	var body struct {
+		Result     json.RawMessage `json:"result"`
+		Pagination *PageInfo       `json:"pagination"`
+		Error      json.RawMessage `json:"error"`
+		Errors     json.RawMessage `json:"errors"`
+	}
+	if err := json.Unmarshal(rb, &body); err != nil {
+		// Not an enveloped response; treat the whole body as the payload.
+		return &Envelope{Result: rb}, nil
+	}
+	if isPresent(body.Error) || isPresent(body.Errors) {
+		return nil, &APIError{Status: status, Body: string(rb)}
+	}
+	if body.Result == nil {
+		return &Envelope{Result: rb}, nil
+	}
+	return &Envelope{Result: body.Result, Pagination: body.Pagination}, nil
+}
+
+// isPresent reports whether a raw field carries a value (absent and JSON null don't).
+func isPresent(raw json.RawMessage) bool {
+	return len(raw) > 0 && !bytes.Equal(raw, []byte("null"))
 }
 
 // unscopedPath lists the v1 endpoints that must omit X-AP-Context.
@@ -251,31 +323,33 @@ func sleepCtx(ctx context.Context, d time.Duration) {
 	}
 }
 
-// Selector is the v1 query body: filter conditions, sort, and pagination.
+// Selector is the v1 query body: field projection, filters, sort, pagination.
 type Selector struct {
 	Fields     []string    `json:"fields,omitempty"`
-	Conditions []Condition `json:"conditions,omitempty"`
-	OrderBy    []OrderBy   `json:"orderBy,omitempty"`
+	Filters    []Filter    `json:"filters,omitempty"`
+	Sorting    []Sort      `json:"sorting,omitempty"`
 	Pagination *Pagination `json:"pagination,omitempty"`
 }
 
-// Condition filters a query request.
-type Condition struct {
-	Field    string   `json:"field"`
-	Operator string   `json:"operator"` // EQUALS, IN, CONTAINS_ANY, STARTSWITH, ...
-	Values   []string `json:"values"`
+// Filter narrows a query request. Value is a scalar for EQUALS/LIKE and a list
+// for IN/BETWEEN; which operators a field accepts is per-field (LIKE is the
+// substring match, EQUALS and IN are universal).
+type Filter struct {
+	Field    string `json:"field"`
+	Operator string `json:"operator"` // EQUALS, IN, LIKE, BETWEEN, GREATER_THAN, ...
+	Value    any    `json:"value"`
 }
 
-// OrderBy sorts a query request.
-type OrderBy struct {
-	Field     string `json:"field"`
-	SortOrder string `json:"sortOrder"` // ASCENDING | DESCENDING
+// Sort orders a query request.
+type Sort struct {
+	Field string `json:"field"`
+	Order string `json:"order"` // ASC | DESC
 }
 
-// Pagination bounds a query request.
+// Pagination bounds a query request. PageSize maxes out at 1000.
 type Pagination struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
+	Offset   int `json:"offset"`
+	PageSize int `json:"pageSize"`
 }
 
 // Query POSTs {path}/query with a selector and paginates until `limit`
@@ -292,27 +366,36 @@ func (c *Client) Query(ctx context.Context, path string, sel *Selector, limit in
 		if limit > 0 && limit-len(items) < page {
 			want = limit - len(items)
 		}
-		sel.Pagination = &Pagination{Offset: offset, Limit: want}
+		sel.Pagination = &Pagination{Offset: offset, PageSize: want}
 		env, err := c.DoRaw(ctx, "POST", path, sel)
 		if err != nil {
 			return nil, err
 		}
-		if env == nil || len(env.Data) == 0 {
+		batch, done := pageItems(env)
+		items = append(items, batch...)
+		if done {
 			return items, nil
 		}
-		var batch []json.RawMessage
-		if err := json.Unmarshal(env.Data, &batch); err != nil {
-			return []json.RawMessage{env.Data}, nil
-		}
-		items = append(items, batch...)
 		offset += len(batch)
 		if len(batch) < want || (limit > 0 && len(items) >= limit) {
 			return items, nil
 		}
-		if env.Pagination != nil && offset >= env.Pagination.TotalResults {
+		if env.Pagination != nil && env.Pagination.TotalCount > 0 && offset >= env.Pagination.TotalCount {
 			return items, nil
 		}
 	}
+}
+
+// pageItems decodes one page of results. done reports that paging must stop:
+// the response was empty or carried a single object instead of a list.
+func pageItems(env *Envelope) (batch []json.RawMessage, done bool) {
+	if env == nil || len(env.Result) == 0 {
+		return nil, true
+	}
+	if err := json.Unmarshal(env.Result, &batch); err != nil {
+		return []json.RawMessage{env.Result}, true
+	}
+	return batch, false
 }
 
 // GetPaged fetches GET list endpoints page by page until `limit` items (0 = all).
@@ -333,25 +416,28 @@ func (c *Client) GetPaged(ctx context.Context, path string, limit int) ([]json.R
 		if err != nil {
 			return nil, err
 		}
-		if env == nil || len(env.Data) == 0 {
+		batch, done := pageItems(env)
+		items = append(items, batch...)
+		if done {
 			return items, nil
 		}
-		var batch []json.RawMessage
-		if err := json.Unmarshal(env.Data, &batch); err != nil {
-			return []json.RawMessage{env.Data}, nil
-		}
-		items = append(items, batch...)
 		offset += len(batch)
 		if len(batch) < want || (limit > 0 && len(items) >= limit) {
 			return items, nil
 		}
-		if env.Pagination != nil && offset >= env.Pagination.TotalResults {
+		if env.Pagination != nil && env.Pagination.TotalCount > 0 && offset >= env.Pagination.TotalCount {
 			return items, nil
 		}
 	}
 }
 
-// EqCond is shorthand for a single EQUALS condition.
-func EqCond(field, value string) *Selector {
-	return &Selector{Conditions: []Condition{{Field: field, Operator: "EQUALS", Values: []string{value}}}}
+// EqFilter is shorthand for a selector with a single EQUALS filter.
+func EqFilter(field string, value any) *Selector {
+	return &Selector{Filters: []Filter{{Field: field, Operator: "EQUALS", Value: value}}}
+}
+
+// BulkBody wraps records for the bulk-create/bulk-update endpoints, which take
+// {"items": [...]} rather than a bare array.
+func BulkBody(items []map[string]any) map[string]any {
+	return map[string]any{"items": items}
 }

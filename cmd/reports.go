@@ -9,22 +9,31 @@ import (
 
 var reportMetricCols = []string{
 	"Impressions=impressions", "Taps=taps", "Installs=totalInstalls",
-	"Spend=localSpend", "AvgCPT=avgCPT", "AvgCPA=totalAvgCPI", "TTR=ttr", "CR=totalInstallRate",
+	"Spend=localSpend", "AvgCPT=cpt", "AvgCPA=totalAvgCPI", "TTR=ttr", "CR=totalInstallRate",
 }
 
 func init() {
 	reportsCmd := &cobra.Command{Use: "reports", Short: "Performance reports (spend, taps, installs, CPA)"}
 
+	// Reports name the reported entity `id`/`name` and its parents by id, so
+	// the campaign filter is `id` on the campaign report and `campaignId`
+	// everywhere else — likewise for the ad group filter.
 	type reportDef struct {
-		name, path string
-		idCols     []string
+		name, path              string
+		campaignField, adgField string
+		idCols                  []string
 	}
 	defs := []reportDef{
-		{"campaigns", "/v1/reports/apps/campaigns/query", []string{"CampaignId=campaignId", "Campaign=campaignName"}},
-		{"adgroups", "/v1/reports/apps/adgroups/query", []string{"AdGroupId=adGroupId", "AdGroup=adGroupName", "CampaignId=campaignId"}},
-		{"keywords", "/v1/reports/apps/keywords/query", []string{"KeywordId=keywordId", "Keyword=keyword", "Match=matchType", "Bid=bidAmount", "AdGroupId=adGroupId"}},
-		{"ads", "/v1/reports/apps/ads/query", []string{"AdId=adId", "Ad=adName", "AdGroupId=adGroupId"}},
-		{"searchterms", "/v1/reports/apps/searchterms/query", []string{"SearchTerm=searchTermText", "Source=searchTermSource", "Keyword=keyword", "AdGroupId=adGroupId", "CampaignId=campaignId"}},
+		{"campaigns", "/v1/reports/apps/campaigns/query", "id", "",
+			[]string{"CampaignId=id", "Campaign=name"}},
+		{"adgroups", "/v1/reports/apps/adgroups/query", "campaignId", "id",
+			[]string{"AdGroupId=id", "AdGroup=name", "CampaignId=campaignId"}},
+		{"keywords", "/v1/reports/apps/keywords/query", "campaignId", "adGroupId",
+			[]string{"KeywordId=id", "Keyword=text", "Match=matchType", "Bid=bid", "AdGroupId=adGroupId"}},
+		{"ads", "/v1/reports/apps/ads/query", "campaignId", "adGroupId",
+			[]string{"AdId=id", "Ad=name", "AdGroupId=adGroupId"}},
+		{"searchterms", "/v1/reports/apps/searchterms/query", "campaignId", "adGroupId",
+			[]string{"SearchTerm=searchTermText", "Source=searchTermSource", "Keyword=keyword.text", "AdGroupId=adGroupId", "CampaignId=campaignId"}},
 	}
 
 	for _, d := range defs {
@@ -43,12 +52,12 @@ func init() {
 					return err
 				}
 				if campaign != "" {
-					req.Selector.Conditions = append(req.Selector.Conditions,
-						api.Condition{Field: "campaignId", Operator: "EQUALS", Values: []string{campaign}})
+					req.Filters = append(req.Filters,
+						api.Filter{Field: d.campaignField, Operator: "EQUALS", Value: campaign})
 				}
-				if adgroup != "" {
-					req.Selector.Conditions = append(req.Selector.Conditions,
-						api.Condition{Field: "adGroupId", Operator: "EQUALS", Values: []string{adgroup}})
+				if adgroup != "" && d.adgField != "" {
+					req.Filters = append(req.Filters,
+						api.Filter{Field: d.adgField, Operator: "EQUALS", Value: adgroup})
 				}
 				rows, err := c.RunReport(cmd.Context(), d.path, req)
 				if err != nil {

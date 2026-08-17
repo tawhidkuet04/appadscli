@@ -64,7 +64,7 @@ func init() {
 			}
 			sel := &api.Selector{}
 			if brand != "" {
-				sel = api.EqCond("businessBrandId", brand)
+				sel = api.EqFilter("businessBrandId", brand)
 			}
 			items, err := c.Query(cmd.Context(), "/v1/locations/query", sel, 0)
 			if err != nil {

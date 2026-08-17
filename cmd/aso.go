@@ -49,7 +49,7 @@ func init() {
 			}
 			// Apple's own popularity, when credentials + account are set.
 			if pop, err := searchTermPopularity(cmd, []string{term}, country); err == nil && len(pop) > 0 {
-				result["searchPopularity"] = api.Field(pop[0], "searchPopularity")
+				result["searchPopularity"] = api.Field(pop[0], "searchPopularity1to5")
 			} else if err != nil {
 				result["searchPopularity"] = "n/a (login + account required)"
 			}
@@ -91,7 +91,8 @@ func init() {
 				return err
 			}
 			h, rows := api.Table(items, []string{
-				"SearchTerm=searchTerm", "Country=countryOrRegion", "Popularity=searchPopularity",
+				"SearchTerm=searchTerm", "Country=countryOrRegion", "Week=week",
+				"Popularity=searchPopularity1to5", "RankInGenre=rankInGenre",
 			})
 			return render().Rows(h, rows, items)
 		},
@@ -118,7 +119,7 @@ func init() {
 			if path == "" {
 				return fmt.Errorf("--type must be keyword, phrase, or category")
 			}
-			sel := api.EqCond("adamId", sApp)
+			sel := &api.Selector{Filters: promotedAppFilters(sApp)}
 			items, err := c.Query(cmd.Context(), path, sel, 0)
 			if err != nil {
 				return err

@@ -38,9 +38,16 @@ func BidPlan(ctx context.Context, c *api.Client, st *store.Store, o BidAdjustOpt
 	if err != nil {
 		return nil, err
 	}
-	req.Selector.Conditions = []api.Condition{{
-		Field: "adGroupId", Operator: "EQUALS", Values: []string{o.AdGroupID},
-	}}
+	// Keyword reports insist on a campaignId filter, so resolve the ad group's
+	// campaign before asking for its keywords.
+	campaignID, err := adGroupCampaign(ctx, c, o.AdGroupID)
+	if err != nil {
+		return nil, err
+	}
+	req.Filters = []api.Filter{
+		{Field: "campaignId", Operator: "EQUALS", Value: campaignID},
+		{Field: "adGroupId", Operator: "EQUALS", Value: o.AdGroupID},
+	}
 	rows, err := c.RunReport(ctx, "/v1/reports/apps/keywords/query", req)
 	if err != nil {
 		return nil, err
@@ -59,8 +66,8 @@ func BidPlan(ctx context.Context, c *api.Client, st *store.Store, o BidAdjustOpt
 		if taps < o.MinTaps {
 			continue
 		}
-		kwID := api.Field(r, "keywordId")
-		oldBid := api.FloatField(r, "bidAmount")
+		kwID := api.Field(r, "id")
+		oldBid := api.FloatField(r, "bid")
 		if oldBid == 0 {
 			continue
 		}
@@ -72,7 +79,7 @@ func BidPlan(ctx context.Context, c *api.Client, st *store.Store, o BidAdjustOpt
 		}
 		var ratio float64
 		var reason string
-		ch := BidChange{KeywordID: kwID, Text: api.Field(r, "keyword"), OldBid: oldBid, CPA: cpa, Installs: installs}
+		ch := BidChange{KeywordID: kwID, Text: api.Field(r, "text"), OldBid: oldBid, CPA: cpa, Installs: installs}
 		if o.TargetROAS > 0 {
 			roas := 0.0
 			if spend > 0 {
@@ -111,15 +118,15 @@ func BidPlan(ctx context.Context, c *api.Client, st *store.Store, o BidAdjustOpt
 
 // BidApply pushes bid changes via keywords/bulk-update.
 func BidApply(ctx context.Context, c *api.Client, st *store.Store, changes []BidChange, currency string) (json.RawMessage, error) {
-	var body []map[string]any
+	var items []map[string]any
 	for _, ch := range changes {
-		body = append(body, map[string]any{
-			"id":        json.Number(ch.KeywordID),
-			"bidAmount": map[string]string{"amount": api.FmtUSD(ch.NewBid), "currency": currency},
+		items = append(items, map[string]any{
+			"id":  json.Number(ch.KeywordID),
+			"bid": map[string]string{"amount": api.FmtUSD(ch.NewBid), "currency": currency},
 		})
 	}
 	var out json.RawMessage
-	if err := c.Post(ctx, "/v1/keywords/bulk-update", body, &out); err != nil {
+	if err := c.Post(ctx, "/v1/keywords/bulk-update", api.BulkBody(items), &out); err != nil {
 		return nil, err
 	}
 	for _, ch := range changes {

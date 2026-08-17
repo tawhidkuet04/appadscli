@@ -23,7 +23,7 @@ func init() {
 			}
 			sel := &api.Selector{}
 			if campaignID != "" {
-				sel = api.EqCond("campaignId", campaignID)
+				sel = api.EqFilter("campaignId", campaignID)
 			}
 			items, err := c.Query(cmd.Context(), "/v1/adgroups/query", sel, limit)
 			if err != nil {
@@ -31,7 +31,7 @@ func init() {
 			}
 			h, rows := api.Table(items, []string{
 				"Id=id", "CampaignId=campaignId", "Name=name", "Status=status",
-				"ServingStatus=servingStatus", "DefaultBid=$money:defaultBidAmount",
+				"DisplayStatus=displayStatus", "DefaultBid=$money:bidStrategy.bid",
 				"SearchMatch=automatedKeywordsOptIn",
 			})
 			return render().Rows(h, rows, items)
@@ -71,11 +71,14 @@ func init() {
 				return err
 			}
 			body := map[string]any{
-				"campaignId":             json.Number(cCampaign),
-				"name":                   cName,
-				"defaultBidAmount":       map[string]string{"amount": api.FmtUSD(cBid), "currency": cCurrency},
+				"campaignId": json.Number(cCampaign),
+				"name":       cName,
+				"bidStrategy": map[string]any{
+					"bidStrategyType": "MANUAL_CPT",
+					"bid":             map[string]string{"amount": api.FmtUSD(cBid), "currency": cCurrency},
+				},
 				"automatedKeywordsOptIn": cSearchMatch,
-				"pricingModel":           "CPC",
+				"pricingModel":           "CPT",
 			}
 			ok, err := confirmOrAbort(cmd, fmt.Sprintf("create ad group %q in campaign %s (default bid %.2f %s)", cName, cCampaign, cBid, cCurrency))
 			if err != nil || !ok {
@@ -120,11 +123,14 @@ func init() {
 				if err := c.Get(cmd.Context(), "/v1/adgroups/"+args[0], &ag); err != nil {
 					return err
 				}
-				cur := api.Field(ag, "defaultBidAmount.currency")
+				cur := api.Field(ag, "bidStrategy.bid.currency")
 				if cur == "" {
 					cur = "USD"
 				}
-				body["defaultBidAmount"] = map[string]string{"amount": api.FmtUSD(uBid), "currency": cur}
+				body["bidStrategy"] = map[string]any{
+					"bidStrategyType": "MANUAL_CPT",
+					"bid":             map[string]string{"amount": api.FmtUSD(uBid), "currency": cur},
+				}
 			}
 			if len(body) == 0 {
 				return fmt.Errorf("nothing to update — pass --name, --status, and/or --default-bid")

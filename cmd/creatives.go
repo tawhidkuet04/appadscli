@@ -24,7 +24,8 @@ func init() {
 				return err
 			}
 			h, rows := api.Table(items, []string{
-				"Id=id", "Name=name", "Type=type", "State=state", "AdamId=adamId", "ProductPageId=productPageId",
+				"Id=id", "Name=name", "Type=creativeType", "Status=systemStatus",
+				"AdamId=destination.parameters.adamId", "ProductPageId=destination.parameters.productPageId",
 			})
 			return render().Rows(h, rows, items)
 		},
@@ -114,14 +115,14 @@ func init() {
 			}
 			sel := &api.Selector{}
 			if adGroup != "" {
-				sel = api.EqCond("adGroupId", adGroup)
+				sel = api.EqFilter("adGroupId", adGroup)
 			}
 			items, err := c.Query(cmd.Context(), "/v1/ads/query", sel, 0)
 			if err != nil {
 				return err
 			}
 			h, rows := api.Table(items, []string{
-				"Id=id", "Name=name", "Status=status", "ServingStatus=servingStatus",
+				"Id=id", "Name=name", "Status=status", "DisplayStatus=displayStatus",
 				"CreativeId=creativeId", "AdGroupId=adGroupId",
 			})
 			return render().Rows(h, rows, items)
@@ -198,7 +199,7 @@ func init() {
 			}
 			sel := &api.Selector{}
 			if cppApp != "" {
-				sel = api.EqCond("adamId", cppApp)
+				sel = api.EqFilter("adamId", cppApp)
 			}
 			items, err := c.Query(cmd.Context(), "/v1/product-pages/query", sel, 0)
 			if err != nil {
@@ -277,13 +278,13 @@ ad. Apple rotates serving; compare with ` + "`appadscli cpp test report`" + `.`,
 				return err
 			}
 			if rAdGroup != "" {
-				req.Selector.Conditions = []api.Condition{{Field: "adGroupId", Operator: "EQUALS", Values: []string{rAdGroup}}}
+				req.Filters = []api.Filter{{Field: "adGroupId", Operator: "EQUALS", Value: rAdGroup}}
 			}
 			rows, err := c.RunReport(cmd.Context(), "/v1/reports/apps/ads/query", req)
 			if err != nil {
 				return err
 			}
-			h, tbl := api.Table(rows, append([]string{"AdId=adId", "Ad=adName"}, reportMetricCols...))
+			h, tbl := api.Table(rows, append([]string{"AdId=id", "Ad=name"}, reportMetricCols...))
 			return render().Rows(h, tbl, rows)
 		},
 	}

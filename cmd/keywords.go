@@ -13,7 +13,7 @@ import (
 
 var keywordCols = []string{
 	"Id=id", "Text=text", "Match=matchType", "Status=status",
-	"Bid=$money:bidAmount", "AdGroupId=adGroupId", "CampaignId=campaignId",
+	"Bid=$money:bid", "AdGroupId=adGroupId", "CampaignId=campaignId",
 }
 
 func init() {
@@ -31,12 +31,12 @@ func init() {
 			}
 			sel := &api.Selector{}
 			if adgroup != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{Field: "adGroupId", Operator: "EQUALS", Values: []string{adgroup}})
+				sel.Filters = append(sel.Filters, api.Filter{Field: "adGroupId", Operator: "EQUALS", Value: adgroup})
 			}
 			if campaign != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{Field: "campaignId", Operator: "EQUALS", Values: []string{campaign}})
+				sel.Filters = append(sel.Filters, api.Filter{Field: "campaignId", Operator: "EQUALS", Value: campaign})
 			}
-			if len(sel.Conditions) == 0 {
+			if len(sel.Filters) == 0 {
 				return fmt.Errorf("pass --adgroup or --campaign (the API requires a scope filter)")
 			}
 			items, err := c.Query(cmd.Context(), "/v1/keywords/query", sel, limit)
@@ -77,14 +77,14 @@ func init() {
 			if len(terms) == 0 {
 				return fmt.Errorf("no keywords — pass --terms or --file")
 			}
-			var body []map[string]any
+			var items []map[string]any
 			for _, t := range terms {
-				body = append(body, map[string]any{
+				items = append(items, map[string]any{
 					"adGroupId": json.Number(addAdgroup),
 					"text":      strings.TrimSpace(t),
 					"matchType": strings.ToUpper(addMatch),
-					"bidAmount": map[string]string{"amount": api.FmtUSD(addBid), "currency": addCurrency},
-					"status":    "ACTIVE",
+					"bid":       map[string]string{"amount": api.FmtUSD(addBid), "currency": addCurrency},
+					"status":    "ENABLED",
 				})
 			}
 			ok, err := confirmOrAbort(cmd, fmt.Sprintf("add %d %s-match keywords to ad group %s at %.2f %s",
@@ -93,7 +93,7 @@ func init() {
 				return err
 			}
 			var out json.RawMessage
-			if err := c.Post(cmd.Context(), "/v1/keywords/bulk-create", body, &out); err != nil {
+			if err := c.Post(cmd.Context(), "/v1/keywords/bulk-create", api.BulkBody(items), &out); err != nil {
 				return err
 			}
 			return render().JSON(out)
@@ -119,23 +119,23 @@ func init() {
 			if err := c.RequireAccount(); err != nil {
 				return err
 			}
-			var body []map[string]any
+			var items []map[string]any
 			for _, id := range args {
 				u := map[string]any{"id": json.Number(id)}
 				if cmd.Flags().Changed("bid") {
-					u["bidAmount"] = map[string]string{"amount": api.FmtUSD(updBid), "currency": "USD"}
+					u["bid"] = map[string]string{"amount": api.FmtUSD(updBid), "currency": "USD"}
 				}
 				if updStatus != "" {
 					u["status"] = strings.ToUpper(updStatus)
 				}
-				body = append(body, u)
+				items = append(items, u)
 			}
 			ok, err := confirmOrAbort(cmd, fmt.Sprintf("update %d keyword(s)", len(args)))
 			if err != nil || !ok {
 				return err
 			}
 			var out json.RawMessage
-			if err := c.Post(cmd.Context(), "/v1/keywords/bulk-update", body, &out); err != nil {
+			if err := c.Post(cmd.Context(), "/v1/keywords/bulk-update", api.BulkBody(items), &out); err != nil {
 				return err
 			}
 			return render().JSON(out)
@@ -154,16 +154,16 @@ func init() {
 			if err := c.RequireAccount(); err != nil {
 				return err
 			}
-			var body []map[string]any
+			var items []map[string]any
 			for _, id := range args {
-				body = append(body, map[string]any{"id": json.Number(id), "status": "PAUSED"})
+				items = append(items, map[string]any{"id": json.Number(id), "status": "PAUSED"})
 			}
 			ok, err := confirmOrAbort(cmd, fmt.Sprintf("pause %d keyword(s)", len(args)))
 			if err != nil || !ok {
 				return err
 			}
 			var out json.RawMessage
-			if err := c.Post(cmd.Context(), "/v1/keywords/bulk-update", body, &out); err != nil {
+			if err := c.Post(cmd.Context(), "/v1/keywords/bulk-update", api.BulkBody(items), &out); err != nil {
 				return err
 			}
 			return render().JSON(out)
@@ -217,8 +217,8 @@ func init() {
 					"adGroupId": json.Number(need("adgroupid", rec)),
 					"text":      need("text", rec),
 					"matchType": strings.ToUpper(need("matchtype", rec)),
-					"bidAmount": map[string]string{"amount": need("bid", rec), "currency": cur},
-					"status":    "ACTIVE",
+					"bid":       map[string]string{"amount": need("bid", rec), "currency": cur},
+					"status":    "ENABLED",
 				}
 				if id := need("id", rec); id != "" {
 					kw["id"] = json.Number(id)
@@ -234,14 +234,14 @@ func init() {
 			results := map[string]any{}
 			if len(creates) > 0 {
 				var out json.RawMessage
-				if err := c.Post(cmd.Context(), "/v1/keywords/bulk-create", creates, &out); err != nil {
+				if err := c.Post(cmd.Context(), "/v1/keywords/bulk-create", api.BulkBody(creates), &out); err != nil {
 					return err
 				}
 				results["created"] = out
 			}
 			if len(updates) > 0 {
 				var out json.RawMessage
-				if err := c.Post(cmd.Context(), "/v1/keywords/bulk-update", updates, &out); err != nil {
+				if err := c.Post(cmd.Context(), "/v1/keywords/bulk-update", api.BulkBody(updates), &out); err != nil {
 					return err
 				}
 				results["updated"] = out
@@ -259,22 +259,20 @@ func init() {
 
 	// negatives
 	negativesCmd := &cobra.Command{Use: "negatives", Short: "Manage negative keywords"}
-	var nAdgroup, nCampaign string
+	var nAdgroup string
 	nList := &cobra.Command{
 		Use:   "list",
-		Short: "List negative keywords",
+		Short: "List an ad group's negative keywords",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c := client()
 			if err := c.RequireAccount(); err != nil {
 				return err
 			}
-			sel := &api.Selector{}
-			if nAdgroup != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{Field: "adGroupId", Operator: "EQUALS", Values: []string{nAdgroup}})
+			// The endpoint scopes by ad group only — a campaign-level filter is rejected.
+			if nAdgroup == "" {
+				return fmt.Errorf("pass --adgroup (the API scopes negative keyword queries by ad group)")
 			}
-			if nCampaign != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{Field: "campaignId", Operator: "EQUALS", Values: []string{nCampaign}})
-			}
+			sel := api.EqFilter("adGroupId", nAdgroup)
 			items, err := c.Query(cmd.Context(), "/v1/negative-keywords/query", sel, 0)
 			if err != nil {
 				return err
@@ -286,8 +284,8 @@ func init() {
 			return render().Rows(h, rows, items)
 		},
 	}
-	nList.Flags().StringVar(&nAdgroup, "adgroup", "", "ad group id")
-	nList.Flags().StringVar(&nCampaign, "campaign", "", "campaign id")
+	nList.Flags().StringVar(&nAdgroup, "adgroup", "", "ad group id (required)")
+	_ = nList.MarkFlagRequired("adgroup")
 
 	var (
 		negAdgroup, negCampaign, negMatch, negTerms, negFile string
@@ -317,19 +315,19 @@ func init() {
 			if len(terms) == 0 {
 				return fmt.Errorf("no keywords — pass --terms or --file")
 			}
-			var body []map[string]any
+			var items []map[string]any
 			for _, t := range terms {
 				n := map[string]any{
 					"text":      strings.TrimSpace(t),
 					"matchType": strings.ToUpper(negMatch),
-					"status":    "ACTIVE",
+					"status":    "ENABLED",
 				}
 				if negAdgroup != "" {
 					n["adGroupId"] = json.Number(negAdgroup)
 				} else {
 					n["campaignId"] = json.Number(negCampaign)
 				}
-				body = append(body, n)
+				items = append(items, n)
 			}
 			scope := "campaign " + negCampaign
 			if negAdgroup != "" {
@@ -340,7 +338,7 @@ func init() {
 				return err
 			}
 			var out json.RawMessage
-			if err := c.Post(cmd.Context(), "/v1/negative-keywords/bulk-create", body, &out); err != nil {
+			if err := c.Post(cmd.Context(), "/v1/negative-keywords/bulk-create", api.BulkBody(items), &out); err != nil {
 				return err
 			}
 			return render().JSON(out)
