@@ -108,11 +108,10 @@ Then: appadscli roas report --by keyword`,
 				"adgroup":  "/v1/reports/apps/adgroups/query",
 				"keyword":  "/v1/reports/apps/keywords/query",
 			}[by]
-			idField := map[string]string{
-				"campaign": "campaignId", "adgroup": "adGroupId", "keyword": "keywordId",
-			}[by]
+			// Reports key the reported entity as id/name (keywords carry text).
+			idField := "id"
 			nameField := map[string]string{
-				"campaign": "campaignName", "adgroup": "adGroupName", "keyword": "keyword",
+				"campaign": "name", "adgroup": "name", "keyword": "text",
 			}[by]
 			req, err := api.NewReportRequest(since, "")
 			if err != nil {

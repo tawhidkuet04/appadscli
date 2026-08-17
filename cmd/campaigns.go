@@ -11,8 +11,9 @@ import (
 )
 
 var campaignCols = []string{
-	"Id=id", "Name=name", "Status=status", "ServingStatus=servingStatus",
-	"DailyBudget=$money:dailyBudgetAmount", "Countries=countriesOrRegions", "AdamId=adamId",
+	"Id=id", "Name=name", "Status=status", "DisplayStatus=displayStatus",
+	"DailyBudget=$money:dailyBudget.value", "Countries=targeting.countryOrRegion.include",
+	"App=promotedObjectId",
 }
 
 func init() {
@@ -30,7 +31,7 @@ func init() {
 			}
 			sel := &api.Selector{}
 			if name != "" {
-				sel.Conditions = []api.Condition{{Field: "name", Operator: "CONTAINS_ANY", Values: []string{name}}}
+				sel.Filters = []api.Filter{{Field: "name", Operator: "LIKE", Value: name}}
 			}
 			items, err := c.Query(cmd.Context(), "/v1/campaigns/query", sel, limit)
 			if err != nil {
@@ -74,13 +75,18 @@ func init() {
 			}
 			countries := strings.Split(strings.ToUpper(createCountries), ",")
 			body := map[string]any{
+				"adAccountId":        mustInt(c.AdAccount),
 				"name":               createName,
-				"adamId":             mustInt(createApp),
-				"adChannelType":      "SEARCH",
-				"supplySources":      []string{"APPSTORE_SEARCH_RESULTS"},
 				"billingEvent":       "TAPS",
-				"countriesOrRegions": countries,
-				"dailyBudgetAmount":  map[string]string{"amount": api.FmtUSD(createDaily), "currency": createCurrency},
+				"promotedObjectType": "APPSTORE_APP",
+				"promotedObjectId":   createApp,
+				"dailyBudget": map[string]any{
+					"value": map[string]string{"amount": api.FmtUSD(createDaily), "currency": createCurrency},
+				},
+				"targeting": map[string]any{
+					"countryOrRegion": map[string]any{"include": countries},
+					"supplyPlacement": map[string]any{"include": []string{"APPSTORE_SEARCH_RESULTS"}},
+				},
 			}
 			ok, err := confirmOrAbort(cmd, fmt.Sprintf("create campaign %q (%.2f %s/day, %s)", createName, createDaily, createCurrency, createCountries))
 			if err != nil || !ok {
@@ -124,7 +130,9 @@ func init() {
 				if err != nil {
 					return err
 				}
-				body["dailyBudgetAmount"] = map[string]string{"amount": api.FmtUSD(updDaily), "currency": cur}
+				body["dailyBudget"] = map[string]any{
+					"value": map[string]string{"amount": api.FmtUSD(updDaily), "currency": cur},
+				}
 				desc = append(desc, fmt.Sprintf("set daily budget to %.2f %s", updDaily, cur))
 			}
 			if len(body) == 0 {
@@ -207,9 +215,9 @@ func campaignCurrency(cmd *cobra.Command, c *api.Client, id string) (string, err
 	if err := c.Get(cmd.Context(), "/v1/campaigns/"+id, &camp); err != nil {
 		return "", err
 	}
-	cur := api.Field(camp, "dailyBudgetAmount.currency")
+	cur := api.Field(camp, "dailyBudget.value.currency")
 	if cur == "" {
-		cur = api.Field(camp, "budgetAmount.currency")
+		cur = api.Field(camp, "bidStrategy.bid.currency")
 	}
 	if cur == "" {
 		cur = "USD"

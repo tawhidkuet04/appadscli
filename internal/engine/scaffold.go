@@ -90,13 +90,18 @@ func ScaffoldApply(ctx context.Context, c *api.Client, p *Plan) ([]ScaffoldResul
 	var out []ScaffoldResult
 	for _, sc := range p.Campaigns {
 		campBody := map[string]any{
+			"adAccountId":        json.Number(c.AdAccount),
 			"name":               sc.Name,
-			"adamId":             json.Number(p.AdamID),
-			"adChannelType":      "SEARCH",
-			"supplySources":      []string{"APPSTORE_SEARCH_RESULTS"},
 			"billingEvent":       "TAPS",
-			"countriesOrRegions": sc.Countries,
-			"dailyBudgetAmount":  map[string]string{"amount": api.FmtUSD(sc.DailyBudget), "currency": sc.Currency},
+			"promotedObjectType": "APPSTORE_APP",
+			"promotedObjectId":   p.AdamID,
+			"dailyBudget": map[string]any{
+				"value": map[string]string{"amount": api.FmtUSD(sc.DailyBudget), "currency": sc.Currency},
+			},
+			"targeting": map[string]any{
+				"countryOrRegion": map[string]any{"include": sc.Countries},
+				"supplyPlacement": map[string]any{"include": []string{"APPSTORE_SEARCH_RESULTS"}},
+			},
 		}
 		var camp json.RawMessage
 		if err := c.Post(ctx, "/v1/campaigns", campBody, &camp); err != nil {
@@ -104,11 +109,14 @@ func ScaffoldApply(ctx context.Context, c *api.Client, p *Plan) ([]ScaffoldResul
 		}
 		campID := api.Field(camp, "id")
 		agBody := map[string]any{
-			"campaignId":             json.Number(campID),
-			"name":                   sc.AdGroupName,
-			"defaultBidAmount":       map[string]string{"amount": api.FmtUSD(sc.DefaultBid), "currency": sc.Currency},
+			"campaignId": json.Number(campID),
+			"name":       sc.AdGroupName,
+			"bidStrategy": map[string]any{
+				"bidStrategyType": "MANUAL_CPT",
+				"bid":             map[string]string{"amount": api.FmtUSD(sc.DefaultBid), "currency": sc.Currency},
+			},
 			"automatedKeywordsOptIn": sc.SearchMatch,
-			"pricingModel":           "CPC",
+			"pricingModel":           "CPT",
 		}
 		var ag json.RawMessage
 		if err := c.Post(ctx, "/v1/adgroups", agBody, &ag); err != nil {

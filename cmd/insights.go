@@ -28,13 +28,13 @@ func init() {
 			if err != nil {
 				return err
 			}
-			sel := &api.Selector{}
+			var filters []api.Filter
 			if isApp != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{Field: "adamId", Operator: "EQUALS", Values: []string{isApp}})
+				filters = append(filters, api.Filter{Field: "adamId", Operator: "EQUALS", Value: isApp})
 			}
 			if isCountries != "" {
-				sel.Conditions = append(sel.Conditions, api.Condition{
-					Field: "countryOrRegion", Operator: "IN", Values: strings.Split(strings.ToUpper(isCountries), ","),
+				filters = append(filters, api.Filter{
+					Field: "countryOrRegion", Operator: "IN", Value: strings.Split(strings.ToUpper(isCountries), ","),
 				})
 			}
 			if isKeywordsFile != "" {
@@ -42,12 +42,11 @@ func init() {
 				if err != nil {
 					return err
 				}
-				sel.Conditions = append(sel.Conditions, api.Condition{Field: "searchTerm", Operator: "IN", Values: terms})
+				filters = append(filters, api.Filter{Field: "searchTerm", Operator: "IN", Value: terms})
 			}
 			body := map[string]any{
-				"startTime": start.Format("2006-01-02"),
-				"endTime":   time.Now().Format("2006-01-02"),
-				"selector":  sel,
+				"timeRange": insightsTimeRange(start, time.Now(), "DAILY"),
+				"filters":   filters,
 			}
 			env, err := c.DoRaw(cmd.Context(), "POST", "/v1/insights/apps/impression-share/query", body)
 			if err != nil {
@@ -57,7 +56,7 @@ func init() {
 			h, rows := api.Table(items, []string{
 				"SearchTerm=searchTerm", "Country=countryOrRegion",
 				"LowIS=lowImpressionShare", "HighIS=highImpressionShare",
-				"Rank=rank", "Popularity=searchPopularity",
+				"Rank=rank", "Popularity=searchPopularity1to5",
 			})
 			return render().Rows(h, rows, items)
 		},
@@ -95,7 +94,8 @@ func init() {
 				return err
 			}
 			h, rows := api.Table(items, []string{
-				"SearchTerm=searchTerm", "Country=countryOrRegion", "Popularity=searchPopularity",
+				"SearchTerm=searchTerm", "Country=countryOrRegion", "Week=week",
+				"Genre=genre", "Popularity=searchPopularity1to5", "RankInGenre=rankInGenre",
 			})
 			return render().Rows(h, rows, items)
 		},
@@ -108,35 +108,57 @@ func init() {
 	rootCmd.AddCommand(insightsCmd)
 }
 
-// searchTermPopularity queries Apple's search-term-popularity insight.
+// searchTermPopularity queries Apple's search-term-popularity insight. The
+// endpoint reports whole Sun–Sat weeks, so the window has to be wide enough to
+// contain one — a bare 7 days can miss every week boundary and come back empty.
 func searchTermPopularity(cmd *cobra.Command, terms []string, countries string) ([]json.RawMessage, error) {
 	c := client()
 	if err := c.RequireAccount(); err != nil {
 		return nil, err
 	}
-	sel := &api.Selector{Conditions: []api.Condition{
-		{Field: "searchTerm", Operator: "IN", Values: terms},
-	}}
+	filters := []api.Filter{{Field: "searchTerm", Operator: "IN", Value: terms}}
 	if countries != "" {
-		sel.Conditions = append(sel.Conditions, api.Condition{
-			Field: "countryOrRegion", Operator: "IN", Values: strings.Split(strings.ToUpper(countries), ","),
+		filters = append(filters, api.Filter{
+			Field: "countryOrRegion", Operator: "IN", Value: strings.Split(strings.ToUpper(countries), ","),
 		})
 	}
-	env, err := c.DoRaw(cmd.Context(), "POST", "/v1/insights/apps/search-term-popularity/query", map[string]any{"selector": sel})
+	body := map[string]any{
+		"timeRange": insightsTimeRange(time.Now().AddDate(0, 0, -28), time.Now(), "WEEKLY_SUN_SAT"),
+		"filters":   filters,
+	}
+	env, err := c.DoRaw(cmd.Context(), "POST", "/v1/insights/apps/search-term-popularity/query", body)
 	if err != nil {
 		return nil, err
 	}
 	return envItems(env), nil
 }
 
-// envItems decodes an envelope's data as an item slice, tolerating single objects.
+// insightsTimeRange builds the window insights endpoints require. Both reject a
+// missing granularity, and each accepts its own set: impression share takes
+// DAILY or WEEKLY_SUN_SAT, search term popularity WEEKLY_SUN_SAT or MONTHLY.
+func insightsTimeRange(start, end time.Time, granularity string) map[string]string {
+	return map[string]string{
+		"start":       start.Format("2006-01-02"),
+		"end":         end.Format("2006-01-02"),
+		"granularity": granularity,
+	}
+}
+
+// envItems decodes an envelope's result as an item slice. Insights wrap theirs
+// in {"rows": [...]}; a bare list or single object is tolerated too.
 func envItems(env *api.Envelope) []json.RawMessage {
-	if env == nil || len(env.Data) == 0 {
+	if env == nil || len(env.Result) == 0 {
 		return nil
 	}
+	var wrapper struct {
+		Rows []json.RawMessage `json:"rows"`
+	}
+	if err := json.Unmarshal(env.Result, &wrapper); err == nil && wrapper.Rows != nil {
+		return wrapper.Rows
+	}
 	var items []json.RawMessage
-	if err := json.Unmarshal(env.Data, &items); err == nil {
+	if err := json.Unmarshal(env.Result, &items); err == nil {
 		return items
 	}
-	return []json.RawMessage{env.Data}
+	return []json.RawMessage{env.Result}
 }

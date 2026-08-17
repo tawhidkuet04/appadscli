@@ -102,8 +102,8 @@ func WatchTick(ctx context.Context, c *api.Client, st *store.Store, g *Guardrail
 
 	var totalSpend float64
 	for _, r := range rows {
-		id := api.Field(r, "campaignId")
-		name := api.Field(r, "campaignName")
+		id := api.Field(r, "id")
+		name := api.Field(r, "name")
 		spend := api.FloatField(r, "localSpend")
 		installs := api.FloatField(r, "totalInstalls")
 		totalSpend += spend
@@ -205,20 +205,20 @@ func harvestToPlanChanges(h *GuardrailsHarvest, actions []HarvestAction) []PlanC
 			// The literal keyword create needs the target ad group resolved at
 			// apply time; watch encodes the negative (safe) and leaves promotion
 			// to `appadscli harvest run`, which resolves ad groups properly.
-			body, _ := json.Marshal([]map[string]any{{
+			body, _ := json.Marshal(api.BulkBody([]map[string]any{{
 				"campaignId": json.Number(h.Discovery), "text": a.SearchTerm,
-				"matchType": "EXACT", "status": "ACTIVE",
-			}})
+				"matchType": "EXACT", "status": "ENABLED",
+			}}))
 			out = append(out, PlanChange{
 				Description: "negate promoted term in discovery: " + a.SearchTerm,
 				Method:      "POST", Path: "/v1/negative-keywords/bulk-create", Body: body,
 				EntityType: "negative-keyword", EntityID: a.SearchTerm,
 			})
 		case "negate-waste":
-			body, _ := json.Marshal([]map[string]any{{
+			body, _ := json.Marshal(api.BulkBody([]map[string]any{{
 				"campaignId": json.Number(h.Discovery), "text": a.SearchTerm,
-				"matchType": "EXACT", "status": "ACTIVE",
-			}})
+				"matchType": "EXACT", "status": "ENABLED",
+			}}))
 			out = append(out, PlanChange{
 				Description: "negate wasteful term: " + a.SearchTerm + " — " + a.Reason,
 				Method:      "POST", Path: "/v1/negative-keywords/bulk-create", Body: body,

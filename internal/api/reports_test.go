@@ -33,22 +33,46 @@ func TestParseSince(t *testing.T) {
 
 func TestFlattenRows(t *testing.T) {
 	row := json.RawMessage(`{
-		"metadata": {"campaignId": 42, "campaignName": "brand-us"},
-		"total": {"impressions": 100, "taps": 10,
+		"metadata": {"id": 42, "name": "brand-us"},
+		"totalMetrics": {"impressions": 100, "taps": 10,
 			"localSpend": {"amount": "12.34", "currency": "USD"}}
 	}`)
 	out := flattenRows([]json.RawMessage{row})
 	if len(out) != 1 {
 		t.Fatalf("got %d rows", len(out))
 	}
-	if got := Field(out[0], "campaignName"); got != "brand-us" {
-		t.Errorf("campaignName = %q", got)
+	if got := Field(out[0], "name"); got != "brand-us" {
+		t.Errorf("name = %q", got)
 	}
 	if got := Field(out[0], "localSpend"); got != "12.34" {
 		t.Errorf("localSpend = %q, want flattened amount", got)
 	}
 	if got := FloatField(out[0], "impressions"); got != 100 {
 		t.Errorf("impressions = %v", got)
+	}
+}
+
+func TestFlattenRowsGranular(t *testing.T) {
+	row := json.RawMessage(`{
+		"metadata": {"id": 42, "name": "brand-us"},
+		"totalMetrics": {"impressions": 100},
+		"granularMetrics": [
+			{"date": "2026-08-01", "impressions": 60},
+			{"date": "2026-08-02", "impressions": 40}
+		]
+	}`)
+	out := flattenRows([]json.RawMessage{row})
+	if len(out) != 2 {
+		t.Fatalf("got %d rows, want one per period", len(out))
+	}
+	if got := Field(out[1], "date"); got != "2026-08-02" {
+		t.Errorf("date = %q", got)
+	}
+	if got := Field(out[1], "name"); got != "brand-us" {
+		t.Errorf("metadata not carried into period row: name = %q", got)
+	}
+	if got := FloatField(out[0], "impressions"); got != 60 {
+		t.Errorf("impressions = %v, want the period value", got)
 	}
 }
 
